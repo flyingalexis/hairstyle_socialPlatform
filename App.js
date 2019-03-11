@@ -1,8 +1,8 @@
 import React from 'react';
 import Splash from'./components/Splash'
 import Login from'./components/Login'
-import { StyleSheet, Text, View } from 'react-native';
-import { createDrawerNavigator , createAppContainer} from 'react-navigation'
+import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity} from 'react-native';
+import { createDrawerNavigator , createAppContainer , DrawerItems} from 'react-navigation'
 
 export default class App extends React.Component {
   render() {
@@ -16,9 +16,24 @@ export default class App extends React.Component {
   }
 }
 
+const CustomDrawerComponent = (props) => (
+  <SafeAreaView style={{flex: 1}}>
+  <View style={{ height: 120, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
+    <TouchableOpacity >
+      <Image source={require('./assets/demo.jpeg')} style={{ height: 120, width: 120, borderRadius: 60}}/>
+    </TouchableOpacity>
+  </View>
+    <ScrollView>
+      <DrawerItems {...props}/>
+    </ScrollView>
+  </SafeAreaView>
+)
+
 const AppDrawerNavigator = createDrawerNavigator({
   Splash: Splash,
   login: Login
+},{
+  contentComponent: CustomDrawerComponent
 })
 
 const App_con = createAppContainer(AppDrawerNavigator)
