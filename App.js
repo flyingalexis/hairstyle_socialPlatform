@@ -1,11 +1,14 @@
 import React from 'react';
-import Splash from'./components/Splash'
-import Login from'./components/Login'
 import {AppDrawerNavigator, Drawer}from './utils/Drawer'
 import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity} from 'react-native';
 import { createDrawerNavigator , createAppContainer , DrawerItems} from 'react-navigation'
+import {setup_auth} from './utils/auth.js'
 
 export default class App extends React.Component {
+  constructor(){
+    super()
+    setup_auth()
+  }
   render() {
     const Drawer_nav = createAppContainer(AppDrawerNavigator(this.props));
     return <Drawer_nav/>;

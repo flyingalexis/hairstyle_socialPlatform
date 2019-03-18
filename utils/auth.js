@@ -10,9 +10,10 @@ var config = {
   messagingSenderId: "122458253507"
 };
 
-export let set_up_auth = () => {
+export let setup_auth = () => {
+  console.log('firebase init')
   if (!firebase.apps.length) {
-    firebase.initializeApp({});
+    firebase.initializeApp(config);
   }
 }
 
@@ -28,3 +29,25 @@ export let authLoading = () => {
   })
 }
 
+export let create_account = async (email, password) => {
+  firebase.auth().createUserWithEmailAndPassword(email, password).then(
+      () => Alert.alert('Created user successfully')).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ...
+      return Alert.alert(error.message);
+  });
+}
+
+export let login = async (email, password) => {
+  firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
+    return Alert.alert('Logged in sucessfully');
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ...
+    return Alert.alert(error.message);
+  });
+}

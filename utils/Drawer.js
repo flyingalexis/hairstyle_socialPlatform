@@ -2,8 +2,8 @@
 import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity} from 'react-native';
 import { createDrawerNavigator , createAppContainer , DrawerItems} from 'react-navigation'
 import React from 'react'
-import Login from '../components/Login'
-import Splash from '../components/Splash'
+import Login from '../pages/Login'
+import Splash from '../pages/Splash'
 
 const CustomDrawerComponent = (props) => (
   <SafeAreaView style={{flex: 1}}>
