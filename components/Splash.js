@@ -5,7 +5,7 @@ export default class Splash extends Component{
         return(
             <View style={styles.container}>
                 <Text style={styles.title}> Hey this is the Splash page</Text>
-                <Button onPress={() => this.props.navigation.navigate('login')} title="Learn More" color="#841584"/>
+                <Button onPress={() => this.props.navigation.navigate('Login')} title="Learn More" color="#841584"/>
             </View>
         );
     }
