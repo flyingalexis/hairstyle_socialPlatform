@@ -1,53 +1,53 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Alert, Image, TextInput, TouchableOpacity} from 'react-native'
-import {firebaseLogin} from '../utils/auth'
+import {createAccount} from '../utils/auth'
+import {createProfile} from '../utils/database'
 import {storeLoginState} from '../store/auth/actions'
 import {connect} from 'react-redux'
 import PageWrapper from '../utils/pageWrapper'
+// import {createProfile} from '../utils/database'
 
-class Login extends Component{
+class Register extends Component{
     state = {}
-    // async componentWillMount(){
-        //  image caching has not been done yet ..
-    //     console.log('component will mount');
-    //     console.log(Image.resolveAssetSource(require('../assets/hairo_logo.gif')).uri);
-    //     this.props.logoUri = Image.resolveAssetSource(require('../assets/hairo_logo.gif')).uri
-    //     FastImage.preload(this.props.logoUri)
-    //     // Image.prefetch(require('../assets/hairo_logo.gif'));
-    // }
     render(){
         return(
             <PageWrapper navigation={this.props.navigation}>
-            <View style={styles.container}>
-                <Image style={styles.logo} source={require('../assets/hairo_logo.gif')}/>
-                <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
-                <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
-                <TouchableOpacity style={styles.loginButton} onPress={() => this.handleLogin()}>
-                    <Text style={styles.loginButtonText}>LOGIN</Text>
-                </TouchableOpacity>
-                <View style={styles.signupWrapper}>
-                    <Text style={{color: '#888888'}}>Don't have an account ? </Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
-                        <Text style={styles.signupText}>Signup</Text>
+                <View style={styles.container}>
+                    <Image style={styles.logo} source={require('../assets/hairo_logo.gif')}/>
+                    <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
+                    <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
+                    <TouchableOpacity style={styles.loginButton} onPress={() => this.handleRegister()}>
+                        <Text style={styles.loginButtonText}>Register</Text>
                     </TouchableOpacity>
+                    <View style={styles.signupWrapper}>
+                        <Text style={{color: '#888888'}}>You have an account ? </Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+                            <Text style={styles.signupText}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
             </PageWrapper>
         );
     }
 
-    async handleLogin(){
+    async handleRegister(){
         if (this.state.email && this.state.password) {
             // firebaseLogin(this.state.email, this.state.password);
-            temp_email = "demo@google.com"
-            temp_password = "password"
-            user = await firebaseLogin(temp_email, temp_password);
-            if(user){
-                console.log(user)
-                await this.props.updateLoginState(user);
+            let credential = await createAccount(this.state.email, this.state.password);
+            if(credential){
+                // route to login
+                console.log(credential.user)
+                let profile = {
+                    "email": credential['user']['email'],
+                    "uid": credential['user']['uid']
+                }
+                createProfile(profile).then(() => 
+                    Alert.alert('Registered sucessfully'))
+                    .catch(err => 
+                        Alert.alert(error.message))
             }
         }else{
-            Alert.alert('no login info');
+            Alert.alert('no Register info');
         }
     }
 }
@@ -60,7 +60,7 @@ const mapDispatchToProps = dispatch => ({
     updateLoginState: auth => dispatch(storeLoginState(auth))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Register)
 
 const styles = StyleSheet.create({
     container: {

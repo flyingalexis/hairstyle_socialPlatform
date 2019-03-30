@@ -2,24 +2,30 @@ import React from 'react';
 import {AppDrawerNavigator, Drawer}from './utils/Drawer'
 import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity} from 'react-native';
 import { createDrawerNavigator , createAppContainer , DrawerItems} from 'react-navigation'
-import {setup_auth} from './utils/auth.js'
+import {authLoading} from './utils/auth.js'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
+import authReducer from './store/auth/reducer'
+import {androidTimerFix} from './utils/platformFix'
+
+androidTimerFix()
+const store = createStore(authReducer)
 
 export default class App extends React.Component {
   constructor(){
     super()
-    setup_auth()
+  }
+  async componentDidMount(){
+    await authLoading(store);
   }
   render() {
     const Drawer_nav = createAppContainer(AppDrawerNavigator(this.props));
-    return <Drawer_nav/>;
+    console.log(store);
+    return (
+      <Provider store={store}>
+        <Drawer_nav/>
+      </Provider>
+    );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
