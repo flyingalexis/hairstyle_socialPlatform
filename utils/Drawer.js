@@ -5,6 +5,7 @@ import React from 'react'
 import Login from '../pages/Login'
 import Splash from '../pages/Splash'
 import Register from '../pages/Register'
+import Profile from '../pages/Profile'
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
@@ -15,7 +16,7 @@ const CustomDrawerComponent = (props) => {
     iconBar = (
     <View style={{ height: 120, backgroundColor: 'white', alignItems: 'center', justifyContent: 'space-around'}}>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width:'80%'}}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
           <Image source={require('../assets/demo.jpeg')} style={{ height: 120, width: 120, borderRadius: 60}}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => logout(props)}>
@@ -63,7 +64,8 @@ const drawerWrapperStyle = {
 export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Splash: Splash,
   Login: Login,
-  Register: Register
+  Register: Register,
+  Profile: Profile
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))

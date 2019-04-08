@@ -41,10 +41,16 @@ class Login extends Component{
             // firebaseLogin(this.state.email, this.state.password);
             temp_email = "demo@google.com"
             temp_password = "password"
-            user = await firebaseLogin(temp_email, temp_password);
-            if(user){
-                console.log(user)
-                await this.props.updateLoginState(user);
+            try{
+                user = await firebaseLogin(temp_email, temp_password);
+                if(user){
+                    await this.props.updateLoginState(user);
+                    Alert.alert('login sucessfully');
+                }else{
+                    throw {message: 'login unsuccessfully'}
+                }
+            }catch(e){
+                Alert.alert(e.message);
             }
         }else{
             Alert.alert('no login info');

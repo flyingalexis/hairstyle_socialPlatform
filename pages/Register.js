@@ -14,6 +14,11 @@ class Register extends Component{
             <PageWrapper navigation={this.props.navigation}>
                 <View style={styles.container}>
                     <Image style={styles.logo} source={require('../assets/hairo_logo.gif')}/>
+                    <View style={styles.greetingsWrapper}>
+                        <Text style={styles.greetings}>Welcome to Hairo! </Text>
+                        <Text style={styles.greetings}>Can I know you? </Text>
+                    </View>
+                    <TextInput style={styles.textBox} placeholder="Name" placeholderTextColor='#888888' onChangeText={(name) => this.setState({name})} underlineColorAndroid="transparent"/>
                     <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
                     <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
                     <TouchableOpacity style={styles.loginButton} onPress={() => this.handleRegister()}>
@@ -31,13 +36,12 @@ class Register extends Component{
     }
 
     async handleRegister(){
-        if (this.state.email && this.state.password) {
+        if (this.state.email && this.state.password && this.state.name) {
             // firebaseLogin(this.state.email, this.state.password);
             let credential = await createAccount(this.state.email, this.state.password);
             if(credential){
-                // route to login
-                console.log(credential.user)
                 let profile = {
+                    "name": this.state.name,
                     "email": credential['user']['email'],
                     "uid": credential['user']['uid']
                 }
@@ -66,7 +70,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'transparent',
         flex: 1,
-        alignItems: 'center',
         width: '80%',
         alignSelf: 'center'
     },
@@ -75,8 +78,7 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     logo:{
-        marginTop:'10%',
-        marginBottom:'17%',
+        marginTop: 30,
         width:120,
         height:120
     },
@@ -99,7 +101,6 @@ const styles = StyleSheet.create({
     textBox:{
         width: '100%',
         height: 40,
-        marginHorizontal: 16,
         fontSize:16,
         color: '#888888',
         borderBottomWidth: 2,
@@ -119,5 +120,16 @@ const styles = StyleSheet.create({
         fontSize: 14,
         alignItems: 'center', 
         justifyContent: 'center'
+    }
+    ,
+    greetings:{
+        fontSize: 25,
+        color: 'black',
+        marginVertical: 2,
+
+    },
+    greetingsWrapper:{
+        marginBottom: 15,
+        marginTop:15
     }
 })
