@@ -10,9 +10,25 @@ import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
 
+const authedHiddenDrawerItems = [
+  'Login',
+  'Register',
+]
+
+const unauthedHiddenDrawerItems = [
+  'Profile'
+]
+
 const CustomDrawerComponent = (props) => {
   let iconBar;
+  let renderProps;
+  console.log(props)
   if(props.auth){
+    // hide items by auth status
+    renderProps = {
+      ...props,
+      items: props.items.filter(item => !authedHiddenDrawerItems.includes(item.key)),
+    }
     iconBar = (
     <View style={{ height: 120, backgroundColor: 'white', alignItems: 'center', justifyContent: 'space-around'}}>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width:'80%'}}>
@@ -26,6 +42,11 @@ const CustomDrawerComponent = (props) => {
     </View>
     )
   }else {
+    // hide items by auth status
+    renderProps = {
+      ...props,
+      items: props.items.filter(item => !unauthedHiddenDrawerItems.includes(item.key)),
+    }
     iconBar = (
       <View style={{ height: 60, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
@@ -37,7 +58,7 @@ const CustomDrawerComponent = (props) => {
   return (
     <SafeAreaView style={drawerWrapperStyle}>
       <ScrollView>
-        <DrawerItems {...props}/>
+        <DrawerItems {...renderProps}/>
       </ScrollView>
       {iconBar}
     </SafeAreaView>
