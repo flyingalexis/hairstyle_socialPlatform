@@ -24,7 +24,7 @@ export let authLoading = async (store) => {
       let uid = user['uid']
       let db = firebase.firestore()
       let userProfile = await db.collection("profile").where('uid', '==' , uid).limit(1).get()
-      let profileData = null
+      let profileData = {}
       userProfile.forEach(element => {
         profileData = element.data()
       });

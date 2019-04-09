@@ -22,7 +22,6 @@ const unauthedHiddenDrawerItems = [
 const CustomDrawerComponent = (props) => {
   let iconBar;
   let renderProps;
-  console.log(props)
   if(props.auth){
     // hide items by auth status
     renderProps = {

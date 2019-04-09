@@ -24,7 +24,7 @@ class Profile extends Component{
                             <View style={styles.statusWrapper}>
                                 <View style={styles.statusGrid}>
                                     <Text style={styles.statusNumber}>236</Text>
-                                    <Text>Views</Text>
+                                    <Text>Likes</Text>
                                 </View>
                                 <View style={{flexDirection:'row', flex: 4}}>
                                     <View style={styles.verticalSeparationLine}/>
