@@ -9,7 +9,7 @@ class Profile extends Component{
         console.log()
         if (this.props.auth == null){
             console.log('go to login');
-            this.props.navigation.navigate('Login')
+            this.props.navigation.navigate('Login');
         }
     }
     render(){
