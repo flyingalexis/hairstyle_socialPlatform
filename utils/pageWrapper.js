@@ -13,7 +13,9 @@ export default class PageWrapper extends Component{
                     <Left>
                         <Icon name="menu" style={styles.icon} onPress={() => this.props.navigation.dispatch(DrawerActions.toggleDrawer())}/>
                     </Left>
-                    <Right />
+                    <Right>
+                        {this.props.customNavIcon && this.props.customNavIcon}
+                    </Right>
                 </Header>
                 {this.props.children}
             </View>

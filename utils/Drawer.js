@@ -28,11 +28,14 @@ const CustomDrawerComponent = (props) => {
       ...props,
       items: props.items.filter(item => !authedHiddenDrawerItems.includes(item.key)),
     }
+    
+    icon_source = (props.auth.image ? {uri: `data:image/gif;base64,${props.auth.image}`}:require('../assets/demo.jpeg'))
+
     iconBar = (
     <View style={{ height: 120, backgroundColor: 'white', alignItems: 'center', justifyContent: 'space-around'}}>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width:'80%'}}>
         <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
-          <Image source={require('../assets/demo.jpeg')} style={{ height: 120, width: 120, borderRadius: 60}}/>
+          <Image source={icon_source} style={{ height: 80, width: 80, borderRadius: 40}}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => logout(props)}>
           <Text>LOGOUT</Text>

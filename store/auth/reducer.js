@@ -8,6 +8,13 @@ const authReducer = (state = {auth: null}, action) => {
         return {
             auth: null
         }
+      case 'UPDATE':
+        return{
+          auth:{
+            ...state.auth,
+            ...action.updates
+          }
+        }
       default:
         return state
     }
