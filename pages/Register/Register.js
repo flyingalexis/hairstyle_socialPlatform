@@ -1,19 +1,21 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Alert, Image, TextInput, TouchableOpacity} from 'react-native'
-import {createAccount} from '../utils/auth'
-import {createProfile} from '../utils/database'
-import {storeLoginState} from '../store/auth/actions'
+import {createAccount} from '../../utils/auth'
+import {createProfile} from '../../utils/database'
+import {storeLoginState} from '../../store/auth/actions'
 import {connect} from 'react-redux'
-import PageWrapper from '../utils/pageWrapper'
+import navOptions from '../../utils/drawerBarNavOptions'
 // import {createProfile} from '../utils/database'
 
 class Register extends Component{
     state = {}
+
+    static navigationOptions = navOptions
+    
     render(){
         return(
-            <PageWrapper navigation={this.props.navigation}>
                 <View style={styles.container}>
-                    <Image style={styles.logo} source={require('../assets/hairo_logo.gif')}/>
+                    <Image style={styles.logo} source={require('../../assets/hairo_logo.gif')}/>
                     <View style={styles.greetingsWrapper}>
                         <Text style={styles.greetings}>Welcome to Hairo! </Text>
                         <Text style={styles.greetings}>Can I know you? </Text>
@@ -31,7 +33,6 @@ class Register extends Component{
                         </TouchableOpacity>
                     </View>
                 </View>
-            </PageWrapper>
         );
     }
 

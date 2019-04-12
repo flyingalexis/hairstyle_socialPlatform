@@ -1,36 +1,37 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View , Image , TouchableOpacity, Alert} from 'react-native'
 import {connect} from 'react-redux'
-import PageWrapper from '../utils/pageWrapper'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {updateProfile} from '../utils/database'
-import {updateLoginState} from '../store/auth/actions'
+import {updateProfile} from '../../utils/database'
+import {updateLoginState} from '../../store/auth/actions'
+import {navigationCustomOptions} from '../../utils/drawerBarNavOptions'
 
 class Profile extends Component{
     constructor(){
         super()
     }
+    
+    static navigationOptions = navigationCustomOptions(<Icon name="save" onPress={ () => this.updateProfile()}/> )
+
     async componentWillMount(){
         await this.getCameraRollPermission().catch(e => Alert.alert(e.message))
-        this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../assets/demo.jpeg')) });
+        this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../../assets/demo.jpeg')) });
         if (this.props.auth == null){
             console.log('go to login');
             this.props.navigation.navigate('Login');
         }
     }
     state = {
-        icon_source : require('../assets/demo.jpeg') ,
+        icon_source : require('../../assets/demo.jpeg') ,
         update_profile: {
             // store what needs to be updated
         }
     };
     render(){
-        let renderedComponent = <PageWrapper navigation={this.props.navigation}></PageWrapper>;
-        let customNavIcon = <Icon name="save" onPress={ () => this.updateProfile()}/> 
+        let renderedComponent = null;
         if (this.props.auth){
             renderedComponent = (
-            <PageWrapper navigation={this.props.navigation} customNavIcon={customNavIcon}>
                 <View style={styles.container}>
                     <View style ={{...styles.halfWrapper}}>
                         <View style={{flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', flex: 1}}>
@@ -71,7 +72,7 @@ class Profile extends Component{
                         </TouchableOpacity>
                     </View>
                 </View>
-            </PageWrapper>);
+                )
         }
         return renderedComponent;
     }

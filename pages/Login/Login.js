@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Alert, Image, TextInput, TouchableOpacity} from 'react-native'
-import {firebaseLogin} from '../utils/auth'
-import {storeLoginState} from '../store/auth/actions'
+import {firebaseLogin} from '../../utils/auth'
+import {storeLoginState} from '../../store/auth/actions'
 import {connect} from 'react-redux'
-import PageWrapper from '../utils/pageWrapper'
+import navOptions from '../../utils/drawerBarNavOptions'
+// import PageWrapper from '../utils/pageWrapper'
 
 class Login extends Component{
     state = {}
+    static navigationOptions = navOptions
     // async componentWillMount(){
         //  image caching has not been done yet ..
     //     console.log('component will mount');
@@ -17,9 +19,8 @@ class Login extends Component{
     // }
     render(){
         return(
-            <PageWrapper navigation={this.props.navigation}>
             <View style={styles.container}>
-                <Image style={styles.logo} source={require('../assets/hairo_logo.gif')}/>
+                <Image style={styles.logo} source={require('../../assets/hairo_logo.gif')}/>
                 <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
                 <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleLogin()}>
@@ -32,7 +33,7 @@ class Login extends Component{
                     </TouchableOpacity>
                 </View>
             </View>
-            </PageWrapper>
+            
         );
     }
 

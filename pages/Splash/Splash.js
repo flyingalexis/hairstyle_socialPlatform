@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Image} from 'react-native'
 import {connect} from 'react-redux'
-import PageWrapper from '../utils/pageWrapper'
+import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions } from 'expo';
 
 
@@ -10,13 +10,15 @@ class Splash extends Component{
         await this.getLocationAsync();
     }
 
+    
+    static navigationOptions = navOptions
+
     state = {
       image: null,
     };
     render(){
       let { image } = this.state;
         return(
-            <PageWrapper navigation={this.props.navigation}>
                 <View style={styles.container}>
                     <Text style={styles.title}> Hey this is the Splash page</Text>
                     <Button onPress={() => this.props.navigation.navigate('Login')} title="GOTO_Login" color="#841584"/>
@@ -28,7 +30,6 @@ class Splash extends Component{
                     />
                     
                 </View>
-            </PageWrapper>
         );
     }
 

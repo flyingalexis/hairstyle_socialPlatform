@@ -9,7 +9,7 @@ import Profile from '../pages/Profile'
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
-import SalonNav from '../pages/SalonNav';
+import Salon from '../pages/Salon';
 
 const authedHiddenDrawerItems = [
   'Login',
@@ -90,7 +90,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Login: Login,
   Register: Register,
   Profile: Profile,
-  SalonNav: SalonNav
+  Salon: Salon
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))
