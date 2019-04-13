@@ -9,14 +9,7 @@ import navOptions from '../../utils/drawerBarNavOptions'
 class Login extends Component{
     state = {}
     static navigationOptions = navOptions
-    // async componentWillMount(){
-        //  image caching has not been done yet ..
-    //     console.log('component will mount');
-    //     console.log(Image.resolveAssetSource(require('../assets/hairo_logo.gif')).uri);
-    //     this.props.logoUri = Image.resolveAssetSource(require('../assets/hairo_logo.gif')).uri
-    //     FastImage.preload(this.props.logoUri)
-    //     // Image.prefetch(require('../assets/hairo_logo.gif'));
-    // }
+    
     render(){
         return(
             <View style={styles.container}>
