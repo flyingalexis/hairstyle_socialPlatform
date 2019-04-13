@@ -1,18 +1,18 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
 import {updateProfile} from '../../utils/database'
 import {updateLoginState} from '../../store/auth/actions'
-import {navigationCustomOptions} from '../../utils/drawerBarNavOptions'
+import navOptions from '../../utils/drawerBarNavOptions'
 
 class Profile extends Component{
     constructor(){
         super()
     }
     
-    static navigationOptions = navigationCustomOptions(<Icon name="save" onPress={ () => this.updateProfile()}/> )
+    static navigationOptions = navOptions
 
     async componentWillMount(){
         await this.getCameraRollPermission().catch(e => Alert.alert(e.message))
@@ -21,7 +21,15 @@ class Profile extends Component{
             console.log('go to login');
             this.props.navigation.navigate('Login');
         }
+    
     }
+
+    componentDidMount() {
+        rightIcon = <Icon name="save" onPress={ () => this.updateProfile()}/>
+        // pass the right icon the nav then our navbar would have the icon !
+        this.props.navigation.setParams({rightIcon: rightIcon});
+    }
+
     state = {
         icon_source : require('../../assets/demo.jpeg') ,
         update_profile: {
