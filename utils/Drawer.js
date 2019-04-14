@@ -6,6 +6,7 @@ import Login from '../pages/Login'
 import Splash from '../pages/Splash'
 import Register from '../pages/Register'
 import Profile from '../pages/Profile'
+import CreateSalon from '../pages/CreateSalon'
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
@@ -17,7 +18,8 @@ const authedHiddenDrawerItems = [
 ]
 
 const unauthedHiddenDrawerItems = [
-  'Profile'
+  'Profile',
+  'CreateSalon'
 ]
 
 const CustomDrawerComponent = (props) => {
@@ -90,7 +92,8 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Login: Login,
   Register: Register,
   Profile: Profile,
-  Salon: Salon
+  Salon: Salon,
+  CreateSalon: CreateSalon
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))

@@ -5,7 +5,11 @@ import navOptions from '../../utils/drawerBarNavOptions'
 
 class SalonPage extends Component {
 
-    
+    static navigationOptions = ({navigation}) => {
+        let headerTintColor = "#EA6652";
+        let headerStyle = {borderBottomColor:'transparent',borderBottomWidth: 0 ,elevation:0}
+        return {headerTintColor, headerStyle}
+    }
     render() {
         return (
             <Text>Salon Page Screen</Text>
