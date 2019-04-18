@@ -7,10 +7,11 @@ import Splash from '../pages/Splash'
 import Register from '../pages/Register'
 import Profile from '../pages/Profile'
 import CreateSalon from '../pages/CreateSalon'
+import AddHairstyleWork from '../pages/AddHairstyleWork';
+import Salon from '../pages/Salon';
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
-import Salon from '../pages/Salon';
 
 const authedHiddenDrawerItems = [
   'Login',
@@ -22,9 +23,14 @@ const unauthedHiddenDrawerItems = [
   'CreateSalon'
 ]
 
+const haveSalonHiddenDrawerItems = [
+  'CreateSalon'
+]
+
 const CustomDrawerComponent = (props) => {
   let iconBar;
   let renderProps;
+  // auth-wise render drawer
   if(props.auth){
     // hide items by auth status
     renderProps = {
@@ -60,6 +66,13 @@ const CustomDrawerComponent = (props) => {
       </View>
       )
   }
+  // salon-wise render drawer
+  if(props.auth && props.auth.salonId){
+    renderProps = {
+      ...renderProps,
+      items: renderProps.items.filter(item => !haveSalonHiddenDrawerItems.includes(item.key)),
+    }
+  }
   return (
     <SafeAreaView style={drawerWrapperStyle}>
       <ScrollView>
@@ -93,7 +106,8 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Register: Register,
   Profile: Profile,
   Salon: Salon,
-  CreateSalon: CreateSalon
+  CreateSalon: CreateSalon,
+  AddHairstyleWork: AddHairstyleWork
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))

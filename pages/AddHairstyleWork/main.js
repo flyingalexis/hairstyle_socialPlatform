@@ -8,7 +8,7 @@ import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {updateLoginState} from '../../store/auth/actions'
 // import PageWrapper from '../utils/pageWrapper'
 
-class CreateSalon extends Component{
+class AddHairstyleWork extends Component{
     state = {}
     static navigationOptions = navOptions
 
@@ -19,25 +19,23 @@ class CreateSalon extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <Text>Salon Icon</Text>
-                <TouchableOpacity onPress={ () => this._pickImage()}>
-                    <Image source={this.state.salonIcon && {uri: `data:image/gif;base64,${this.state.salonIcon}`} || require('../../assets/demo.jpeg')} style={styles.icon}/>
+                <TouchableOpacity onPress={ () => this._pickImage()} style={{width: '100%', aspectRatio: 1, backgroundColor: 'blue'}}>
+                    <Image source={this.state.salonIcon && {uri: `data:image/gif;base64,${this.state.salonIcon}`} || require('../../assets/demo.jpeg')} style={styles.hairstyleWork}/>
                 </TouchableOpacity>
-                <TextInput style={styles.textBox} placeholder="Salon Name" placeholderTextColor='#888888' onChangeText={(salonName) => this.setState({salonName})} underlineColorAndroid="transparent"/>
-                <TextInput style={styles.textBox} placeholder="contact email" placeholderTextColor='#888888' onChangeText={(contactEmail) => this.setState({contactEmail})} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.textBox} placeholder="Title" placeholderTextColor='#888888' onChangeText={(title) => this.setState({title})} underlineColorAndroid="transparent"/>
                 <TextInput style={styles.multilineTextBox} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
-                <TouchableOpacity style={styles.loginButton} onPress={() => this.handleCreateSalon()}>
-                    <Text style={styles.loginButtonText}>CreateSalon</Text>
+                <TouchableOpacity style={styles.loginButton} onPress={() => this.handleAddHairstyleWork()}>
+                    <Text style={styles.loginButtonText}>Add hairstyleWork</Text>
                 </TouchableOpacity>
             </View>
             
         );
     }
 
-    handleCreateSalon(){
-        if (this.props.auth.salonId){
+    handleAddHairstyleWork(){
+        if (this.props.auth && this.props.auth.salonId){
             //reject user if they have already owned a salon
-            Alert.alert('You already owned a salon (each user can only register one salon)');
+            Alert.alert('Unauthorized, Please login and create your salon to proceed');
             return
         }
         if (this.state.contactEmail && this.state.salonName && this.state.description && this.state.salonIcon) {
@@ -55,7 +53,7 @@ class CreateSalon extends Component{
                 Alert.alert(e.message);
             })
         }else{
-            Alert.alert('Please fill in all the information to create a Salon');
+            Alert.alert('Please fill in all the information to Add a hairstyle work');
         }
     }
 
@@ -83,7 +81,7 @@ class CreateSalon extends Component{
         }
 
         if (!result.cancelled) {
-            this.setState({ salonIcon: result.base64 });
+            this.setState({ hairstyleWorkImage: result.base64 });
             console.log('save image to state');
         }
     }
@@ -97,7 +95,7 @@ const mapDispatchToProps = dispatch => ({
     updateLoginState: auth => dispatch(storeLoginState(auth))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateSalon)
+export default connect(mapStateToProps, mapDispatchToProps)(AddHairstyleWork)
 
 const styles = StyleSheet.create({
     container: {
@@ -107,12 +105,12 @@ const styles = StyleSheet.create({
         width: '80%',
         alignSelf: 'center'
     },
-    icon: {
-        height: 100, 
-        width: 100, 
-        borderRadius: 50,
+    hairstyleWork: {
+        width: '100%', 
+        height: '100%',
         borderWidth: 2,
-        borderColor:"#EA6652"
+        borderColor:"#EA6652",
+        resizeMode:'stretch'
     },
     title:{
         fontWeight: 'bold',
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
     },
     textBox:{
         width: '100%',
-        height: 40,
+        height: 30,
         marginHorizontal: 16,
         fontSize:16,
         color: '#888888',
@@ -148,6 +146,7 @@ const styles = StyleSheet.create({
         width: '100%',
         marginHorizontal: 16,
         fontSize:16,
+        height: 60,
         color: '#888888',
         borderWidth: 2,
         borderColor: '#ACACAC',
