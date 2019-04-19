@@ -33,13 +33,6 @@ class SalonHome extends Component {
 
         return (
             <ScrollView>
-                {/* <Button
-                        onPress={() => this.props.navigation.navigate("SalonPage")}
-                        title="Go To Details"
-                    /> */}
-                {/* <View style={styles.hairstyleCard}>
-                    <Image source={hairstylesWithImg['Afro']} style={styles.hairstyleImage}/>
-                </View> */}
                 <View style={styles.Wrapper}>
                     {hairstyleCards}
                 </View>

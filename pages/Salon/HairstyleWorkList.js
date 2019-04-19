@@ -30,7 +30,9 @@ class HairstyleWorkList extends Component {
             // console.log(this.state.data)
             // console.log(Object.keys(this.state.data[0]))
             this.state.data.map((hairstyleWork) => {
-                navFunc = () => { };
+                navFunc = () => this.props.navigation.navigate('HairstyleWork', {
+                    hairstyleWork
+                });
                 key = hairstyleWork['hairstyleWorkId']
                 this.hairstyleWorkCards.push(
                     <View key={`${key}Card`} style={styles.card}>
