@@ -77,10 +77,7 @@ class CreateSalon extends Component{
         });
         
         // resize image to 100 * 100
-        if (result.width > 200 || result.height > 200){
-            // temp_result = await ImageManipulator.manipulate(result.uri, [{resize:{height: 100, width: 100}}], {format:'png'})
-            result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 100, width: 100}}], { format: 'png' , base64: true});
-        }
+        result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 200, width: 200}}], { format: 'png' , base64: true});
 
         if (!result.cancelled) {
             this.setState({ salonIcon: result.base64 });

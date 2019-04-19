@@ -44,21 +44,6 @@ export let createAccount = async (email, password) => {
   });
 }
 
-
-// export let firebaseLogin = async (email, password) => {
-//   console.log(`login in with ${email} and  ${password}`)
-//   return await firebase.auth().signInWithEmailAndPassword(email, password).then(function(credential){
-//     Alert.alert('Logged in sucessfully');
-//     return credential.user;
-//   }).catch(function(error) {
-//     // Handle Errors here.
-//     var errorCode = error.code;
-//     var errorMessage = error.message;
-//     Alert.alert(error.message);
-//     return null;
-//   });
-// }
-
 export let firebaseLogin = async (email, password) => {
   console.log(`login in with ${email} and  ${password}`)
   let credential = await firebase.auth().signInWithEmailAndPassword(email, password)

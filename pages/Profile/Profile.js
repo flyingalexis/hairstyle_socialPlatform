@@ -113,16 +113,12 @@ class Profile extends Component{
           allowsEditing: true,
           aspect: [3, 3],
         });
-        
         // resize image to 100 * 100
-        if (result.width > 100 || result.height > 100){
-            // temp_result = await ImageManipulator.manipulate(result.uri, [{resize:{height: 100, width: 100}}], {format:'png'})
-            result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 100, width: 100}}], { format: 'png' , base64: true});
-        }
 
         if (!result.cancelled) {
-          this.state.update_profile.image = result.base64
-          this.setState({ icon_source: {uri : result.uri} });
+            result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 200, width: 200}}], { format: 'png' , base64: true});
+            this.state.update_profile.image = result.base64
+            this.setState({ icon_source: {uri : result.uri} });
         }
     }
 }
