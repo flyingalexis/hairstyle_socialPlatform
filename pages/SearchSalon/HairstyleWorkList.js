@@ -13,16 +13,19 @@ class HairstyleWorkList extends Component {
         let headerStyle = { borderBottomColor: 'transparent', borderBottomWidth: 0, elevation: 0 }
         return { headerTintColor, headerStyle }
     }
-    state = {}
+    state = {loading:true}
 
     changeData(data) {
         this.setState({ data })
     }
 
-    componentWillMount() {
-        loadHairstyleWorkByCategory(this.props.navigation.getParam('category')).then(((data) => {
+    async componentWillMount() {
+        await loadHairstyleWorkByCategory(this.props.navigation.getParam('category')).then(((data) => {
             this.changeData(data)
+            this.setState({loading: false})
         }))
+    }
+    componentDidMount(){
     }
     createCards() {
         this.hairstyleWorkCards = [];
@@ -56,14 +59,21 @@ class HairstyleWorkList extends Component {
     render() {
         this.createCards();
         let noMatch = <Text>No macthes were found</Text>
-        return (
-            <ScrollView>
-                {/* <Text>{this.props.navigation.getParam('category')}</Text> */}
-                <View style={styles.Wrapper}>
-                    {this.hairstyleWorkCards.length == 0? noMatch: this.hairstyleWorkCards}
-                </View>
-            </ScrollView>
-        );
+        if(this.state.loading){
+            console.log('loading')
+            return null;
+        }
+        else{
+            console.log('finsih loading')
+            return (
+                <ScrollView>
+                    {/* <Text>{this.props.navigation.getParam('category')}</Text> */}
+                    <View style={styles.Wrapper}>
+                        {this.hairstyleWorkCards.length == 0? noMatch: this.hairstyleWorkCards}
+                    </View>
+                </ScrollView>
+            );
+        }
     }
 }
 

@@ -3,9 +3,10 @@ import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from '
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {updateProfile} from '../../utils/database'
+import {updateProfile, getWorksByuserId} from '../../utils/database'
 import {updateLoginState} from '../../store/auth/actions'
 import navOptions from '../../utils/drawerBarNavOptions'
+import { FontAwesome } from '@expo/vector-icons';
 
 class Profile extends Component{
     constructor(){
@@ -14,11 +15,19 @@ class Profile extends Component{
     
     static navigationOptions = navOptions
 
+    state={
+        portfolio:[],
+        loading: true,
+        icon_source : require('../../assets/demo.jpeg') ,
+        update_profile: {
+            // store what needs to be updated
+        }
+    }
+
     async componentWillMount(){
         await this.getCameraRollPermission().catch(e => Alert.alert(e.message))
         this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../../assets/demo.jpeg')) });
         if (this.props.auth == null){
-            console.log('go to login');
             this.props.navigation.navigate('Login');
         }
     
@@ -28,18 +37,47 @@ class Profile extends Component{
         rightIcon = <Icon name="save" onPress={ () => this.updateProfile()}/>
         // pass the right icon the nav then our navbar would have the icon !
         this.props.navigation.setParams({rightIcon: rightIcon});
-    }
-
-    state = {
-        icon_source : require('../../assets/demo.jpeg') ,
-        update_profile: {
-            // store what needs to be updated
+        if (this.props.auth && this.props.auth.salonId){
+            getWorksByuserId(this.props.auth.uid).then(data => {
+                this.setState({portfolio: data})
+                this.setState({loading: false})
+                // loading state
+            }).catch(e => {
+                Alert.alert(e.message)
+            })
+        }else{
+            this.setState({loading: false})
         }
-    };
+    }
     render(){
-        let renderedComponent = null;
-        if (this.props.auth){
-            renderedComponent = (
+        if(this.state.loading || !this.props.auth){
+            return null
+        }
+        let portfolioCards = this.state.portfolio.map((work) => {
+            let key = work.hairstyleWorkId;
+            return (
+                <TouchableOpacity onPress={()=> {}} style={styles.card} key={`${key}button`}>
+                    <TouchableOpacity onPress={() => {}} style={styles.removeImageButton}>
+                        <FontAwesome name={'remove'} style={{color: 'white'}}/>
+                    </TouchableOpacity>
+                    <Image source={{ uri: `data:image/gif;base64,${work['hairstyleWorkImage']}` }} style={styles.cardsImage} key={`${key}OwnerImg`} />
+                </TouchableOpacity>
+            )
+        })
+        let noSalonComponent = (
+        <View style={{...styles.halfWrapper, justifyContent: "center"}}>
+            <Text style={styles.RegisterSalonLabel}> You have not register your hairsalon yet </Text>
+            <TouchableOpacity style={styles.salonLabelBackground} onPress={ () => this.props.navigation.navigate('CreateSalon')}>
+                <Text style={styles.salonLabel}>Register Your Hair salon</Text>
+            </TouchableOpacity>
+        </View>
+        )
+        let hasSalonComponent = (
+            <View style={styles.portfolioWrapper}>
+                {portfolioCards}
+            </View>
+            )
+        return(
                 <View style={styles.container}>
                     <View style ={{...styles.halfWrapper}}>
                         <View style={{flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', flex: 1}}>
@@ -72,17 +110,10 @@ class Profile extends Component{
                         </View>
                     </View>
                     {/* End of status bar */}
-                    <View style={{...styles.halfWrapper, justifyContent: "center"}}>
-                        
-                        <Text style={styles.RegisterSalonLabel}> You have not register your hairsalon yet </Text>
-                        <TouchableOpacity style={styles.salonLabelBackground}>
-                            <Text style={styles.salonLabel}>Register Your Hair salon</Text>
-                        </TouchableOpacity>
-                    </View>
+                    {/* {this.props.auth.salonId ? hasSalonComponent: noSalonComponent} */}
+                    {this.props.auth.salonId ? hasSalonComponent: noSalonComponent}
                 </View>
                 )
-        }
-        return renderedComponent;
     }
 
     updateProfile = () => {
@@ -190,6 +221,33 @@ const styles = StyleSheet.create({
     },
     statusNumber:{
         fontSize: 20
+    },
+    portfolioWrapper:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: '100%',
+        flex:6
+
+    },
+    card: {
+        flexBasis: '33%',
+        aspectRatio:1,
+        padding: 15
+    },
+    cardsImage:{
+        width:'100%',
+        height:'100%'
+    },
+    removeImageButton:{
+        width: 20,
+        height:20,
+        borderRadius:10,
+        backgroundColor: "#EA6652",
+        position:'absolute',
+        zIndex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
     }
 })
 

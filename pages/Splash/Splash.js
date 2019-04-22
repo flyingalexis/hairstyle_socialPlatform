@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View ,Button, Image} from 'react-native'
+import {StyleSheet, Text, View ,Button, Image,TextInput} from 'react-native'
 import {connect} from 'react-redux'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions } from 'expo';
@@ -27,8 +27,11 @@ class Splash extends Component{
                     <Button
                         title="Pick an image from camera roll"
                         onPress={this._pickImage}
+                        style={styles.submitButton}
                     />
-                    
+                    <View style={styles.submitButton}>
+                    <Button title="Pick an image from camera roll" onPress={()=>{}}> Hey this is the Splash page</Button>
+                    </View>
                 </View>
         );
     }
@@ -63,14 +66,21 @@ class Splash extends Component{
 
 const styles = StyleSheet.create({  
     container: {
-        backgroundColor: 'white',
+        backgroundColor: 'green',
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        height:'100%',
+        width: '100%'
     },
     title:{
         fontWeight: 'bold',
         fontSize: 18
+    },
+    submitButton: {
+        position: 'absolute',
+        bottom:0,
+        left:0,
     }
 })
 

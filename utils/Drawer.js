@@ -8,6 +8,7 @@ import Register from '../pages/Register'
 import Profile from '../pages/Profile'
 import CreateSalon from '../pages/CreateSalon'
 import AddHairstyleWork from '../pages/AddHairstyleWork';
+import SearchSalon from '../pages/SearchSalon';
 import Salon from '../pages/Salon';
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
@@ -105,9 +106,10 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Login: Login,
   Register: Register,
   Profile: Profile,
-  Salon: Salon,
+  "Search Salon": SearchSalon,
   CreateSalon: CreateSalon,
-  AddHairstyleWork: AddHairstyleWork
+  AddHairstyleWork: AddHairstyleWork,
+  Salon: Salon
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))

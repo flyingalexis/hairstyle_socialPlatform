@@ -33,8 +33,9 @@ class Login extends Component{
     async handleLogin(){
         if (this.state.email && this.state.password) {
             // firebaseLogin(this.state.email, this.state.password);
-            temp_email = "demo@demo.com"
+            // temp_email = "demo@demo.com"
             temp_password = "password"
+            temp_email = "slave1@demo.com"
             try{
                 user = await firebaseLogin(temp_email, temp_password);
                 if(user){
