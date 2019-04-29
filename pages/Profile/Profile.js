@@ -92,19 +92,19 @@ class Profile extends Component{
                         {/* status bar */}
                         <View style={styles.statusWrapper}>
                             <View style={styles.statusGrid}>
-                                <Text style={styles.statusNumber}>236</Text>
+                                <Text style={styles.statusNumber}>{this.props.auth.likes?this.props.auth.likes:0}</Text>
                                 <Text>Likes</Text>
                             </View>
                             <View style={{flexDirection:'row', flex: 4}}>
                                 <View style={styles.verticalSeparationLine}/>
                                 <View style={styles.statusGrid}>
-                                    <Text style={styles.statusNumber}>236</Text>
+                                    <Text style={styles.statusNumber}>{this.state.portfolio.length}</Text>
                                     <Text>Gallery</Text>
                                 </View>
                                 <View style={styles.verticalSeparationLine}/>
                             </View>
                             <View style={styles.statusGrid}>
-                                <Text style={styles.statusNumber}>23.6</Text>
+                                <Text style={styles.statusNumber}>{this.props.auth.ratings?this.props.auth.ratings:'-'}</Text>
                                 <Text>Ratings</Text>
                             </View>
                         </View>
@@ -119,8 +119,6 @@ class Profile extends Component{
     updateProfile = () => {
         if(Object.keys(this.state.update_profile).length > 0){
             updateProfile(this.state.update_profile, this.props.auth.uid).then( () => {
-                // update auth in redux
-                console.log('update auth in redux')
                 this.props.dispatch(updateLoginState(this.state.update_profile));
                 Alert.alert('update profile sucessfully')
             }).catch((e) => Alert.alert(e.message))

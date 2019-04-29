@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image ,Alert} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import navOptions from '../../utils/drawerBarNavOptions'
+import {getSalonById} from '../../utils/database'
 
 class HairstyleWork extends Component {
 
@@ -10,11 +11,34 @@ class HairstyleWork extends Component {
         let headerStyle = {borderBottomColor:'transparent',borderBottomWidth: 0 ,elevation:0}
         return {headerTintColor, headerStyle}
     }
+    state={
+        loading:true
+    }
     componentWillMount(){
         this.hairstyleWork = this.props.navigation.getParam('hairstyleWork');
-        console.log(Object.keys(this.hairstyleWork))
+        getSalonById(this.hairstyleWork.salonId).then((data) => {
+            this.salonInfo = data
+            this.setState({loading:false})
+        }).catch(e => Alert.alert(e.message))
     }
+
+    navigateToSalon(){
+        this.props.navigation.navigate('ViewSalonProfile', {
+            salonId: this.hairstyleWork.salonId
+        })
+    }
+    
+    navigateToUserProfile(){
+        this.props.navigation.navigate('ViewProfile', {
+            userId: this.hairstyleWork.ownerId
+        })
+    }
+
     render() {
+        if(this.state.loading){
+            return null;
+        }
+
         demo_comment= [{'username':'Alex', 'comment': 'it Looks great', 'commentId' : 'demo1'}, {'username':'Alex2', 'comment': 'it does not Looks great', 'commentId' : 'demo2'}]
         let comments = demo_comment.map( (commentObj) => {
             // make comments into JSX
@@ -29,10 +53,14 @@ class HairstyleWork extends Component {
             <View style={styles.container}>
                 <Image source={{ uri: `data:image/gif;base64,${this.hairstyleWork['hairstyleWorkImage']}` }} style={styles.hairstyleWork} />
                 <View style={styles.responsePanel}>
-                    <View style={styles.ownerWrapper}>
+                    <TouchableOpacity style={styles.ownerWrapper} onPress={() => this.navigateToUserProfile()}>
                         <Image source={{ uri: `data:image/gif;base64,${this.hairstyleWork['ownerIcon']}` }} style={styles.ownerIcon}/>
                         <Text>{this.hairstyleWork['ownerName']}</Text>
-                    </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.salonWrapper} onPress={() => this.navigateToSalon()}>
+                        <Image source={{ uri: `data:image/gif;base64,${this.salonInfo['salonIcon']}` }} style={styles.ownerIcon}/>
+                        <Text>{this.salonInfo['salonName']}</Text>
+                    </TouchableOpacity>
                     <Text>{this.hairstyleWork['description']}</Text>
                     <Ionicons name="ios-heart-empty" size={30} style={styles.likeIcon} />
                     <View style={styles.separationLine}/>
@@ -71,6 +99,13 @@ const styles = StyleSheet.create({
     ownerWrapper:{
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    salonWrapper:{
+        marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        right:0
     },
     likeIcon:{
         marginBottom: 5

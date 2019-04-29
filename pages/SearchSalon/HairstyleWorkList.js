@@ -22,6 +22,7 @@ class HairstyleWorkList extends Component {
     async componentWillMount() {
         await loadHairstyleWorkByCategory(this.props.navigation.getParam('category')).then(((data) => {
             this.changeData(data)
+            console.log(data.length)
             this.setState({loading: false})
         }))
     }

@@ -99,7 +99,8 @@ export let getWorksByuserId = async (ownerId) => {
 export let getSalonById = async (id) => {
   let db = firebase.firestore()
   let salonDoc = await db.collection("salonProfile").doc(id).get()
-  return salonDoc.data()
+  data = salonDoc.data()
+  return {...data, sid: salonDoc.id}
 }
 
 export let getWorksBySalonId = async (salonId) => {
@@ -175,4 +176,124 @@ export let addAdminToSalon = async (sid, uid) => {
   return docRef.update({
     adminList: firebase.firestore.FieldValue.arrayUnion(uid)
   })
+}
+
+export let rateAUser = async (targetUid, rate, uid) =>{
+  let db = firebase.firestore();
+  let docRef = db.collection("profile").doc(targetUid).collection('ratings').doc(uid);
+  let docSnapshot = await docRef.get();
+  let rerate = false
+  let pastRate = null
+  if (docSnapshot.exists){
+    rerate = true
+    ratingData = docSnapshot.data()
+    pastRate = ratingData['rate']
+  }
+  await docRef.set({rate});
+  let targetUserRef = await db.collection("profile").doc(targetUid).get();
+  let targetUserData = targetUserRef.data();
+  let numOfRates = (targetUserData.numOfRates?targetUserData.numOfRates:0)
+  let rating = (targetUserData.rating?targetUserData.rating:0)
+  let totalRate = rating * numOfRates
+  if(rerate){
+    totalRate = totalRate - pastRate
+    numOfRates--;
+  }
+  rating = (totalRate + rate) / (numOfRates + 1)
+  numOfRates++;
+  await db.collection("profile").doc(targetUid).update({rating,numOfRates})
+  return rating
+}
+
+export let loadRatingAndLikesOnUser = async (uid, targetUid) => {
+  let db = firebase.firestore();
+  let targetUserSnapshot = await db.collection("profile").doc(targetUid).collection('ratings').doc(uid).get();
+  let targetUserLikesSnapshot = await db.collection("profile").doc(targetUid).collection('likes').doc(uid).get();
+  let rateData = targetUserSnapshot.data();
+  let rate = (rateData?rateData['rate']:null)
+  return {selfRate: rate, selfLike:targetUserLikesSnapshot.exists}
+}
+
+export let rateASalon = async (targetSid, rate, uid) =>{
+  let db = firebase.firestore();
+  let docRef = db.collection("salonProfile").doc(targetSid).collection('ratings').doc(uid);
+  let docSnapshot = await docRef.get();
+  let rerate = false
+  let pastRate = null
+  if (docSnapshot.exists){
+    rerate = true
+    ratingData = docSnapshot.data()
+    pastRate = ratingData['rate']
+  }
+  await docRef.set({rate});
+  let targetSalonRef = await db.collection("salonProfile").doc(targetSid).get();
+  let targetSalonData = targetSalonRef.data();
+  let numOfRates = (targetSalonData.numOfRates?targetSalonData.numOfRates:0)
+  let rating = (targetSalonData.rating?targetSalonData.rating:0)
+  let totalRate = rating * numOfRates
+  if(rerate){
+    totalRate = totalRate - pastRate
+    numOfRates--;
+  }
+  rating = (totalRate + rate) / (numOfRates + 1)
+  numOfRates++;
+  await db.collection("salonProfile").doc(targetSid).update({rating,numOfRates})
+  return rating
+}
+
+export let loadRatingAndLikesOnSalon = async (uid, targetSid) => {
+  let db = firebase.firestore();
+  let targetUserSnapshot = await db.collection("salonProfile").doc(targetSid).collection('ratings').doc(uid).get();
+  let targetUserLikesSnapshot = await db.collection("salonProfile").doc(targetSid).collection('likes').doc(uid).get();
+  let rateData = targetUserSnapshot.data();
+  let rate = (rateData?rateData['rate']:null)
+  return {selfRate: rate, selfLike:targetUserLikesSnapshot.exists}
+}
+
+export let likeAUser = async (targetUid, like, uid) =>{
+  let db = firebase.firestore();
+  let docRef = db.collection("profile").doc(targetUid).collection('likes').doc(uid);
+  let docSnapshot = await docRef.get();
+  let unlike = false
+  let pastRate = null
+  if (docSnapshot.exists){
+    unlike = true
+    likesData = docSnapshot.data()
+  }
+  if(!unlike){
+    await docRef.set({like});
+  }
+  else{
+    await db.collection("profile").doc(targetUid).collection('likes').doc(uid).delete(uid)
+  }
+  let targetUserRef = await db.collection("profile").doc(targetUid).get();
+  let targetUserData = targetUserRef.data();
+  let numOfLikes = (targetUserData.likes?targetUserData.likes:0)
+  numOfLikes = (unlike? numOfLikes -1 :  numOfLikes +1)
+  await db.collection("profile").doc(targetUid).update({likes: numOfLikes})
+  return numOfLikes
+}
+
+export let likeASalon = async (salonId, like, uid) =>{
+  let db = firebase.firestore();
+  let docRef = db.collection("salonProfile").doc(salonId).collection('likes').doc(uid);
+  let docSnapshot = await docRef.get();
+  let unlike = false
+  let pastRate = null
+  if (docSnapshot.exists){
+    unlike = true
+    likesData = docSnapshot.data()
+  }
+  if(!unlike){
+    await docRef.set({like});
+  }
+  else{
+    await db.collection("salonProfile").doc(salonId).collection('likes').doc(uid).delete(uid)
+  }
+  let targetSalonRef = await db.collection("salonProfile").doc(salonId).get();
+  let targetSalonData = targetSalonRef.data();
+  let numOfLikes = (targetSalonData.likes?targetSalonData.likes:0)
+  numOfLikes = (unlike? numOfLikes -1 :  numOfLikes +1)
+  await db.collection("salonProfile").doc(salonId).update({likes: numOfLikes})
+  return numOfLikes
 }

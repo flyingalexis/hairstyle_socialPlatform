@@ -6,13 +6,16 @@ import {connect} from 'react-redux'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {hairstyles} from '../../utils/hairstyleList'
+import { FontAwesome } from '@expo/vector-icons';
+
 // import PageWrapper from '../utils/pageWrapper'
 
 pickHairstylePlaceholder = "pick the Hairtyle type -->"
 
 class AddHairstyleWork extends Component{
     state = {
-        hairstyleType: pickHairstylePlaceholder
+        hairstyleType: pickHairstylePlaceholder,
+        tags:[]
     }
     static navigationOptions = navOptions
 
@@ -20,10 +23,39 @@ class AddHairstyleWork extends Component{
         await this.getCameraRollPermission().catch(e => Alert.alert(e.message))
     }
 
+    getTagsFromText(text){
+        let tagReg = /([^\ ]*)\ /g;
+        result = tagReg.exec(text)
+        if(result && result[1] && (this.state.tags.includes(result[1]) || this.state.tags.length >= 3) ){
+            this.tagInput.clear()
+            return
+        }
+        if(result && result[1] && !this.state.tags.includes(result[1])){
+            let newtags = this.state.tags.map(item => item)
+            newtags.push(result[1])
+            this.setState({tags:newtags})
+            this.tagInput.clear()
+        }
+    }
+    removeTag(text){
+        console.log(text)
+        newtags = this.state.tags.filter(x => x !== text)
+        this.setState({tags:newtags})
+    }
     render(){
+        let tags = this.state.tags.map( (tag) => {
+            return (
+                <View key={`${tag}TagBox`} style={styles.tag}>
+                    <Text key={`${tag}Tag`} style={styles.tagText}>{tag}</Text>
+                    <TouchableOpacity key={`${tag}RemoveButton`} onPress={ () => this.removeTag(tag)}>
+                        <FontAwesome name={'remove'} style={styles.tagRemove}/>
+                    </TouchableOpacity>
+                </View>
+            )
+        })
         return(
             <View style={styles.container}>
-                <TouchableOpacity onPress={ () => this._pickImage()} style={{width: '100%', aspectRatio: 1, backgroundColor: 'blue'}}>
+                <TouchableOpacity onPress={ () => this._pickImage()} style={{width: '50%', aspectRatio: 1, backgroundColor: 'blue'}}>
                     <Image source={this.state.hairstyleWorkImage && {uri: `data:image/gif;base64,${this.state.hairstyleWorkImage}`} || require('../../assets/demo.jpeg')} style={styles.hairstyleWork}/>
                 </TouchableOpacity>
                 <TextInput style={styles.textBox} placeholder="Title" placeholderTextColor='#888888' onChangeText={(title) => this.setState({title})} underlineColorAndroid="transparent"/>
@@ -38,6 +70,10 @@ class AddHairstyleWork extends Component{
                     })}
                     <Picker.Item enabled={false} label={pickHairstylePlaceholder} value={pickHairstylePlaceholder} key={pickHairstylePlaceholder}/>
                 </Picker>
+                <View style={styles.tagsWrapper}>
+                    {tags && tags}
+                </View>
+                <TextInput style={styles.textBox} ref={input => this.tagInput = input} placeholder="Separate tags by space" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(tags) => this.getTagsFromText(tags)} underlineColorAndroid="transparent"/>
                 <TextInput style={styles.multilineTextBox} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleAddHairstyleWork()}>
                     <Text style={styles.loginButtonText}>Add hairstyleWork</Text>
@@ -159,5 +195,25 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#ACACAC',
         marginVertical:'3%'
+    },
+    tag:{
+        backgroundColor: "#EA6652",
+        height: 32,
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    tagText:{
+        fontSize: 16,
+        color:'white'
+    },
+    tagRemove:{
+        marginLeft: 3,
+        color: 'white'
+    },
+    tagsWrapper:{
+        flexDirection:'row'
     }
 })

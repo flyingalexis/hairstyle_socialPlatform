@@ -1,6 +1,6 @@
 // A simple file for storing all the hair styles
 
-export const hairstyles = ["Afro", 'Asymmetric cut', 'Chonmage', 'man bun', 'barber', 'korean','Curtained hair', 'Fishtail hair', 'French braid']
+export const hairstyles = ["Afro", 'Asymmetric cut', 'Chonmage', 'Man bun', 'Barber', 'Korean','Curtained hair', 'Fishtail hair', 'French braid']
 
 export const hairstylesWithImg = {
     'Afro': require('../assets/hairstyles/Afro.jpg'),
