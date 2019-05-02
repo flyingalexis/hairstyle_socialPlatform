@@ -7,6 +7,7 @@ import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {hairstyles} from '../../utils/hairstyleList'
 import { FontAwesome } from '@expo/vector-icons';
+import ModalSelector from 'react-native-modal-selector'
 
 // import PageWrapper from '../utils/pageWrapper'
 
@@ -53,27 +54,26 @@ class AddHairstyleWork extends Component{
                 </View>
             )
         })
+
+        let pickerData = []
+        for (let i = 0 ; i < hairstyles.length; i++){
+            pickerData.push({key: i+1, label: hairstyles[i]});
+        }
         return(
             <View style={styles.container}>
                 <TouchableOpacity onPress={ () => this._pickImage()} style={{width: '50%', aspectRatio: 1, backgroundColor: 'blue'}}>
                     <Image source={this.state.hairstyleWorkImage && {uri: `data:image/gif;base64,${this.state.hairstyleWorkImage}`} || require('../../assets/demo.jpeg')} style={styles.hairstyleWork}/>
                 </TouchableOpacity>
                 <TextInput style={styles.textBox} placeholder="Title" placeholderTextColor='#888888' onChangeText={(title) => this.setState({title})} underlineColorAndroid="transparent"/>
-                <Picker
-                    // bug : cannot disable the placehold
-                    selectedValue={this.state.hairstyleType}
-                    style={{height: 50, width: 300}}
-                    onValueChange={(itemValue, itemIndex) =>{this.setState({hairstyleType: itemValue})}
-                    }>
-                    {hairstyles.map( item => {
-                        return <Picker.Item label={item} value={item} key={item}/>
-                    })}
-                    <Picker.Item enabled={false} label={pickHairstylePlaceholder} value={pickHairstylePlaceholder} key={pickHairstylePlaceholder}/>
-                </Picker>
+                <ModalSelector
+                    data={pickerData}
+                    initValue={pickHairstylePlaceholder}
+                    onChange={(option)=>{ this.setState({hairstyleType: option.label}) }} />
+                
                 <View style={styles.tagsWrapper}>
                     {tags && tags}
                 </View>
-                <TextInput style={styles.textBox} ref={input => this.tagInput = input} placeholder="Separate tags by space" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(tags) => this.getTagsFromText(tags)} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.textBox} ref={input => this.tagInput = input} placeholder="Separate tags by space" placeholderTextColor='#888888' onChangeText={(tags) => this.getTagsFromText(tags)} underlineColorAndroid="transparent"/>
                 <TextInput style={styles.multilineTextBox} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleAddHairstyleWork()}>
                     <Text style={styles.loginButtonText}>Add hairstyleWork</Text>

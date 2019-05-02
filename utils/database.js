@@ -31,7 +31,7 @@ export let updateSalonProfile = async (profileObj, sid) => {
 
 export let createHairstyleWork = async (salonHairstyleWork, ownerInfo) => {
   console.log('create hairstyle work')
-  salonHairstyleWork = {...salonHairstyleWork, ...ownerInfo}
+  salonHairstyleWork = {...salonHairstyleWork, ...ownerInfo, date: new Date().valueOf()}
   let db = firebase.firestore()
   let newRecord = await db.collection("hairstyleWork").doc();
   await newRecord.set(salonHairstyleWork)
@@ -296,4 +296,42 @@ export let likeASalon = async (salonId, like, uid) =>{
   numOfLikes = (unlike? numOfLikes -1 :  numOfLikes +1)
   await db.collection("salonProfile").doc(salonId).update({likes: numOfLikes})
   return numOfLikes
+}
+
+export let searchHairstyleWorksByTag = async(sortBy= 'date' , tag = null , lastVisible = null) => {
+  let db = firebase.firestore();
+  let docRef = db.collection("hairstyleWork")
+  if (tag != null){
+    docRef = docRef.where('tags', 'array-contains', tag)
+  }
+  if(sortBy != null){
+    docRef = docRef.orderBy(sortBy, 'desc')
+    //.startAt(((page -1) * 10)).endAt(((1) * 10))
+  }else{
+    docRef = docRef.orderBy('date', 'desc')
+  }
+
+  if (lastVisible != null){
+    docRef = docRef.startAfter(lastVisible)
+  }
+
+  //ten hairstyle in a page
+  docRef = docRef.limit(10)
+
+  let snapshots = await docRef.get()
+  let endOfPage = null
+  console.log(snapshots.docs.length)
+  if (snapshots.docs.length >  0){
+    endOfPage = snapshots.docs[snapshots.docs.length-1]
+  }
+  let hairstyleWorks = []
+  for (hairstylework of snapshots.docs){
+    console.log('docs')
+    data = hairstylework.data()
+    userDoc = await getUserById(data['ownerId'])
+    data = {...data, hairstyleWorkId :hairstylework.id, ownerIcon: userDoc['image']}
+    hairstyleWorks.push(data)
+  }
+  
+  return {hairstyleWorks, endOfPage};
 }

@@ -21,7 +21,9 @@ const authedHiddenDrawerItems = [
 
 const unauthedHiddenDrawerItems = [
   'Profile',
-  'CreateSalon'
+  'CreateSalon',
+  'Salon',
+  'AddHairstyleWork'
 ]
 
 const haveSalonHiddenDrawerItems = [
@@ -106,7 +108,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Login: Login,
   Register: Register,
   Profile: Profile,
-  "Search Salon": SearchSalon,
+  "Hairstyle Search": SearchSalon,
   CreateSalon: CreateSalon,
   AddHairstyleWork: AddHairstyleWork,
   Salon: Salon

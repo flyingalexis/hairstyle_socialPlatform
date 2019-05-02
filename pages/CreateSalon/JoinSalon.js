@@ -15,7 +15,7 @@ class JoinSalon extends Component {
         loading: true,
     }
 
-    loadInvitations(){console.log(Object.keys(this.props.auth))
+    loadInvitations(){
         getInvitations(this.props.auth.uid).then((invitations)=> {
             this.setState({invitations})
             this.setState({loading:false})

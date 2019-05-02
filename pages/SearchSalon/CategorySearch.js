@@ -4,8 +4,13 @@ import { Icon } from 'native-base';
 import navOptions from '../../utils/drawerBarNavOptions'
 import {hairstylesWithImg} from '../../utils/hairstyleList'
 
-class SalonHome extends Component {
-    static navigationOptions = navOptions
+class CategorySearch extends Component {
+    static navigationOptions = ({navigation}) => {
+        let headerTintColor = "#EA6652";
+        let headerStyle = {borderBottomColor:'transparent',borderBottomWidth: 0 ,elevation:0}
+        return {headerTintColor, headerStyle}
+    }
+    
     constructor(){
         super()
     }
@@ -67,4 +72,4 @@ const styles = StyleSheet.create({
     }
  });
 
-export default SalonHome;
+export default CategorySearch;

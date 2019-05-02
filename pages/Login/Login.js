@@ -41,6 +41,7 @@ class Login extends Component{
                 if(user){
                     await this.props.updateLoginState(user);
                     Alert.alert('login sucessfully');
+                    this.props.navigation.navigate('Profile')
                 }else{
                     throw {message: 'login unsuccessfully'}
                 }
