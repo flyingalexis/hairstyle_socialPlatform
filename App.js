@@ -20,7 +20,6 @@ export default class App extends React.Component {
   }
   render() {
     const Drawer_nav = createAppContainer(AppDrawerNavigator(this.props));
-    console.log(store);
     return (
       <Provider store={store}>
         <Drawer_nav/>

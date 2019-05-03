@@ -3,15 +3,21 @@ import { TabHeading } from 'native-base';
 
 
 export let createProfile = async (profileObj) => {
-    console.log('creating profile')
-    let db = firebase.firestore()
-    return db.collection("profile").doc(profileObj['uid']).set(profileObj)
-  }
+  console.log('creating profile')
+  let db = firebase.firestore()
+  await db.collection("profile").doc(profileObj['uid']).set(profileObj)
+}
 
 export let updateProfile = async (profileObj, uid) => {
   console.log('update profile')
   let db = firebase.firestore()
   await db.collection("profile").doc(uid).update(profileObj);
+}
+
+export let removeProfile = async (uid) =>{
+  // for testing
+  let db = firebase.firestore()
+  await db.collection("profile").doc(uid).delete();
 }
 
 export let createSalonProfile = async (salonProfileObj, uid) => {
@@ -29,6 +35,12 @@ export let updateSalonProfile = async (profileObj, sid) => {
   return db.collection("salonProfile").doc(sid).update(profileObj);
 }
 
+export let removeSalonProfile = async(sid) => {
+  // for testing
+  let db = firebase.firestore()
+  await db.collection("salonProfile").doc(sid).delete();
+}
+
 export let createHairstyleWork = async (salonHairstyleWork, ownerInfo) => {
   console.log('create hairstyle work')
   salonHairstyleWork = {...salonHairstyleWork, ...ownerInfo, date: new Date().valueOf()}
@@ -36,6 +48,12 @@ export let createHairstyleWork = async (salonHairstyleWork, ownerInfo) => {
   let newRecord = await db.collection("hairstyleWork").doc();
   await newRecord.set(salonHairstyleWork)
   return newRecord.id;
+}
+
+export let removeHairstyleWork = async (hairstyleWorkId) => {
+  //remove
+  let db = firebase.firestore()
+  await db.collection("hairstyleWork").doc(hairstyleWorkId).delete();
 }
 
 export let loadHairstyleWorkByCategory = async (category) => {
@@ -127,6 +145,7 @@ export let getUsersByIds = async (ids) => {
 }
 
 export let inviteUserToSalon = async (email, sid) => {
+  //not tested
   let db = firebase.firestore()
   let doc = await db.collection("salonProfile").doc(sid).get()
   let salonData = doc.data()
@@ -264,7 +283,7 @@ export let likeAUser = async (targetUid, like, uid) =>{
     await docRef.set({like});
   }
   else{
-    await db.collection("profile").doc(targetUid).collection('likes').doc(uid).delete(uid)
+    await db.collection("profile").doc(targetUid).collection('likes').doc(uid).delete()
   }
   let targetUserRef = await db.collection("profile").doc(targetUid).get();
   let targetUserData = targetUserRef.data();
@@ -288,7 +307,7 @@ export let likeASalon = async (salonId, like, uid) =>{
     await docRef.set({like});
   }
   else{
-    await db.collection("salonProfile").doc(salonId).collection('likes').doc(uid).delete(uid)
+    await db.collection("salonProfile").doc(salonId).collection('likes').doc(uid).delete()
   }
   let targetSalonRef = await db.collection("salonProfile").doc(salonId).get();
   let targetSalonData = targetSalonRef.data();
@@ -299,6 +318,7 @@ export let likeASalon = async (salonId, like, uid) =>{
 }
 
 export let searchHairstyleWorksByTag = async(sortBy= 'date' , tag = null , lastVisible = null) => {
+  // untested
   let db = firebase.firestore();
   let docRef = db.collection("hairstyleWork")
   if (tag != null){
