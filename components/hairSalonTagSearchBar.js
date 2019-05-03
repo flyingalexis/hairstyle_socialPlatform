@@ -31,7 +31,8 @@ class TagSearchBar extends Component {
                         selectStyle= {styles.select}
                         data={sortByList}
                         initValue={""}
-                        onChange={(option)=>{ this.setState({sortBy: option.label}) }} />
+                        onChange={(option)=>{ this.setState({sortBy: option.label})}}
+                        selectedItemTextStyle = {styles.selectText}/>
                 </View>
                 
                 <View style={styles.sortByWrapper}>
@@ -83,6 +84,10 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 5,
         height: 30,
+    },
+    selectText:{
+        fontSize: 16,
+        padding: 0,
     }
 })
 

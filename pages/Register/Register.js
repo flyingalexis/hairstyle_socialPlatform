@@ -23,7 +23,7 @@ class Register extends Component{
                     <View style={styles.textBoxWrapper}>
                         <TextInput style={styles.textBox} placeholder="Name" placeholderTextColor='#888888' onChangeText={(name) => this.setState({name})} underlineColorAndroid="transparent"/>
                         <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
-                        <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
+                        <TextInput style={styles.textBox} placeholder="Password" placeholderTextColor='#888888' secureTextEntry={true} onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
                     </View>
                     <View/>
                     <TouchableOpacity style={styles.loginButton} onPress={() => this.handleRegister()}>

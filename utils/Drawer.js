@@ -30,6 +30,11 @@ const haveSalonHiddenDrawerItems = [
   'CreateSalon'
 ]
 
+const noSalonHiddenDrawerItems = [
+  'Salon',
+  'AddHairstyleWork'
+]
+
 const CustomDrawerComponent = (props) => {
   let iconBar;
   let renderProps;
@@ -74,6 +79,12 @@ const CustomDrawerComponent = (props) => {
     renderProps = {
       ...renderProps,
       items: renderProps.items.filter(item => !haveSalonHiddenDrawerItems.includes(item.key)),
+    }
+  }
+  if(props.auth && !props.auth.salonId){
+    renderProps = {
+      ...renderProps,
+      items: renderProps.items.filter(item => !noSalonHiddenDrawerItems.includes(item.key)),
     }
   }
   return (

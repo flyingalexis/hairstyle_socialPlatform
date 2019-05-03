@@ -102,7 +102,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         width: '80%',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-around'
     },
     icon: {
         height: 100, 
@@ -133,9 +135,9 @@ const styles = StyleSheet.create({
     },
     textBox:{
         width: '100%',
-        height: 40,
         marginHorizontal: 16,
         fontSize:16,
+        paddingLeft:5,
         color: '#888888',
         borderBottomWidth: 2,
         borderBottomColor: '#ACACAC',
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
         width: '100%',
         marginHorizontal: 16,
         fontSize:16,
+        padding:5,
         color: '#888888',
         borderWidth: 2,
         borderColor: '#ACACAC',
