@@ -217,10 +217,10 @@ const styles = StyleSheet.create({
     },
     commentUsername: {
         fontWeight:'bold',
-        flex: 3
+        flex: 4
     },
     comment: {
-        flex: 9
+        flex: 8
     },
     commentWrapper:{
         flexDirection:'row'
