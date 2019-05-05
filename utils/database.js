@@ -355,3 +355,69 @@ export let searchHairstyleWorksByTag = async(sortBy= 'date' , tag = null , lastV
   
   return {hairstyleWorks, endOfPage};
 }
+
+export let likeAHairstyleWork = async (uid, hairstyleWorkId, like) =>{
+  let db = firebase.firestore();
+  let docRef = db.collection("hairstyleWork").doc(hairstyleWorkId).collection('likes').doc(uid);
+  let docSnapshot = await docRef.get();
+  let unlike = false
+  if (docSnapshot.exists){
+    unlike = true
+    likesData = docSnapshot.data()
+  }
+  if(!unlike){
+    await docRef.set({like});
+  }
+  else{
+    await db.collection("hairstyleWork").doc(hairstyleWorkId).collection('likes').doc(uid).delete()
+  }
+  let targetHairstyleWorkRef = await db.collection("hairstyleWork").doc(hairstyleWorkId).get();
+  let targetHairstyleWorkData = targetHairstyleWorkRef.data();
+  let numOfLikes = (targetHairstyleWorkData.likes?targetHairstyleWorkData.likes:0)
+  numOfLikes = (unlike? numOfLikes -1 :  numOfLikes +1)
+  await db.collection("hairstyleWork").doc(hairstyleWorkId).update({likes: numOfLikes})
+  return numOfLikes
+}
+
+export let loadLikesOnHairstyleWork = async (uid, targetWid) => {
+  let db = firebase.firestore();
+  let targetUserLikesSnapshot = await db.collection("hairstyleWork").doc(targetWid).collection('likes').doc(uid).get();
+  return targetUserLikesSnapshot.exists
+}
+
+export let commentOnHairstyleWork = async (uid, username , hairstyleWorkId, comment) =>{
+  let db = firebase.firestore();
+  let doc = await db.collection("hairstyleWork").doc(hairstyleWorkId).get()
+  let hairstyleWorkData = doc.data()
+  let commentCount = (hairstyleWorkData.commentCount?hairstyleWorkData.commentCount + 1: 1)
+  let docRef = db.collection("hairstyleWork").doc(hairstyleWorkId).collection('comment').doc();
+  await docRef.set({uid,username,comment,index: commentCount,  date: new Date().valueOf()})
+  await db.collection("hairstyleWork").doc(hairstyleWorkId).update({commentCount})
+}
+
+export let getCommentsOnHairstyleWork = async(hairstyleWorkId, lastVisible = null) => {
+  // untested
+  let db = firebase.firestore();
+  let docRef = await db.collection("hairstyleWork").doc(hairstyleWorkId).collection("comment").orderBy('index', 'desc')
+
+  if (lastVisible != null){
+    docRef = docRef.startAfter(lastVisible)
+  }
+
+  //5 Comments in a page
+  docRef = docRef.limit(10)
+
+  let snapshots = await docRef.get()
+  let endOfPage = null
+  
+  if (snapshots.docs.length >  0){
+    endOfPage = snapshots.docs[snapshots.docs.length-1]
+  }
+  let comments = []
+  for (comment of snapshots.docs){
+    data = comment.data()
+    comments.push(data)
+  }
+  
+  return {comments, endOfPage};
+}

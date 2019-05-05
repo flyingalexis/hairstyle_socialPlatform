@@ -101,7 +101,7 @@ class ViewProfile extends Component{
         
         let portfolioCards = this.state.portfolio.map((work) => {
             let key = work.hairstyleWorkId;
-            navFunc = () => this.props.navigation.push('HairstyleWork', {
+            let navFunc = () => this.props.navigation.push('HairstyleWork', {
                 hairstyleWork: {...work, ownerIcon: this.user.image}
             });
             return (

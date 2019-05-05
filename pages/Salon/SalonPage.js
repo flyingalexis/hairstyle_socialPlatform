@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, ScrollView} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
@@ -18,7 +18,7 @@ class SalonPage extends Component{
     static navigationOptions = navOptions
 
     componentDidMount(){
-        rightIcon = <Icon name="save" onPress={() => this.handleUpdateSalonProfile()} />
+        rightIcon = <Icon name="save" style={{marginRight: 5}}onPress={() => this.handleUpdateSalonProfile()} />
         // pass the right icon the nav then our navbar would have the icon !
         this.props.navigation.setParams({ rightIcon: rightIcon });
         this.loadSalonInfo()
@@ -50,7 +50,7 @@ class SalonPage extends Component{
         let portfolioCards = this.state.portfolio.map((work) => {
             let key = work.hairstyleWorkId;
             return (
-                <TouchableOpacity onPress={() => { }} style={styles.card} key={`${key}button`}>
+                <TouchableOpacity onPress={()=> {this.props.navigation.navigate('HairstyleWork', {hairstyleWork:work, banBrowse: true})}} style={styles.card} key={`${key}button`}>
                     <TouchableOpacity onPress={() => { }} style={styles.removeImageButton}>
                         <FontAwesome name={'remove'} style={{ color: 'white' }} />
                     </TouchableOpacity>
@@ -61,6 +61,7 @@ class SalonPage extends Component{
         return (
             <View style={styles.container}>
                 <View style={{ ...styles.halfWrapper }}>
+                    <FontAwesome name="refresh" style={{position:'absolute', margin: 5, right: 0}} size={28} onPress={ () =>this.loadSalonInfo()}/>
                     <View style={{ flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', flex: 1 }}>
                         <View />
                         <TouchableOpacity onPress={() => this._pickImage()}>
@@ -74,26 +75,30 @@ class SalonPage extends Component{
                     {/* status bar */}
                     <View style={styles.statusWrapper}>
                         <View style={styles.statusGrid}>
-                            <Text style={styles.statusNumber}>236</Text>
+                            <Text style={styles.statusNumber}>{this.state.salonInfo.likes?this.state.salonInfo.likes:0}</Text>
                             <Text>Likes</Text>
                         </View>
                         <View style={{ flexDirection: 'row', flex: 4 }}>
                             <View style={styles.verticalSeparationLine} />
                             <View style={styles.statusGrid}>
-                                <Text style={styles.statusNumber}>236</Text>
+                                <Text style={styles.statusNumber}>{this.state.portfolio?this.state.portfolio.length:0}</Text>
                                 <Text>Gallery</Text>
                             </View>
                             <View style={styles.verticalSeparationLine} />
                         </View>
                         <View style={styles.statusGrid}>
-                            <Text style={styles.statusNumber}>23.6</Text>
+                            <Text style={styles.statusNumber}>{this.state.salonInfo.rating?this.state.salonInfo.rating:'-'}</Text>
                             <Text>Ratings</Text>
                         </View>
                     </View>
                 </View>
                 {/* End of status bar */}
-                <View style={styles.portfolioWrapper}>
-                    {portfolioCards}
+                <View style={{flex: 6, width: '100%'}}>
+                    <ScrollView style={{flex: 1, width: '100%'}}>
+                        <View style={styles.portfolioWrapper}>
+                            {portfolioCards}
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         )

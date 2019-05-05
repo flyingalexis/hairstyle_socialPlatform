@@ -13,6 +13,7 @@ import Salon from '../pages/Salon';
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
+import { MaterialIcons, AntDesign,FontAwesome,Entypo,Foundation } from '@expo/vector-icons';
 
 const authedHiddenDrawerItems = [
   'Login',
@@ -115,14 +116,71 @@ const drawerWrapperStyle = {
 
 
 export const AppDrawerNavigator = (props) => (createDrawerNavigator({
-  Splash: Splash,
-  Login: Login,
-  Register: Register,
-  Profile: Profile,
-  "Hairstyle Search": SearchSalon,
-  CreateSalon: CreateSalon,
-  AddHairstyleWork: AddHairstyleWork,
-  Salon: Salon
+  "News feed": {
+    screen:Splash,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+          <Entypo name="news" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  Login: {
+    screen:Login,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+          <AntDesign name="login" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  Register: {
+    screen:Register,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+          <FontAwesome name="registered" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  Profile:{
+    screen: Profile,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <AntDesign name="profile" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  "Hairstyle Search": {
+    screen:SearchSalon,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <FontAwesome name="crosshairs" size={20} style={{ color: tintColor}}/>
+      )
+    }
+    
+  },
+  CreateSalon: {
+    screen:CreateSalon,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <MaterialIcons name="create" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  AddHairstyleWork: {
+    screen:AddHairstyleWork,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <Entypo name="add-to-list" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  Salon: {
+    screen:Salon,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <Foundation name="social-myspace" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  }
 },{
   contentComponent: connect(mapStateToProps)(CustomDrawerComponent)
 }))

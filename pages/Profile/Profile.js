@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, ScrollView} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {updateProfile, getWorksByuserId} from '../../utils/database'
+import {updateProfile, getWorksByuserId,removeHairstyleWork} from '../../utils/database'
 import {updateLoginState} from '../../store/auth/actions'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { FontAwesome } from '@expo/vector-icons';
@@ -34,9 +34,14 @@ class Profile extends Component{
     }
 
     componentDidMount() {
-        rightIcon = <Icon name="save" onPress={ () => this.updateProfile()}/>
+        rightIcon = <Icon name="save" style={{marginRight: 5}} onPress={ () => this.updateProfile()}/>
         // pass the right icon the nav then our navbar would have the icon !
         this.props.navigation.setParams({rightIcon: rightIcon});
+        this.loadData()
+    }
+
+    loadData (){
+        this.setState({loading: true})
         if (this.props.auth && this.props.auth.salonId){
             getWorksByuserId(this.props.auth.uid).then(data => {
                 this.setState({portfolio: data})
@@ -49,6 +54,16 @@ class Profile extends Component{
             this.setState({loading: false})
         }
     }
+
+    removeHairstyleWork(workId){
+        console.log('remove hairstyle work')
+        removeHairstyleWork(workId).then( () => {
+            Alert.alert('removed hairstyle work successfully')
+            return this.loadData()
+        }).catch( e => {
+            Alert.alert(e.message)
+        })
+    }
     render(){
         if(this.state.loading || !this.props.auth){
             return null
@@ -56,12 +71,14 @@ class Profile extends Component{
         let portfolioCards = this.state.portfolio.map((work) => {
             let key = work.hairstyleWorkId;
             return (
-                <TouchableOpacity onPress={()=> {}} style={styles.card} key={`${key}button`}>
-                    <TouchableOpacity onPress={() => {}} style={styles.removeImageButton}>
+                <View style={styles.card} key={`${key}`}>
+                    <TouchableOpacity onPress={() => {this.removeHairstyleWork(key)}} style={styles.removeImageButton}>
                         <FontAwesome name={'remove'} style={{color: 'white'}}/>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> {this.props.navigation.navigate('HairstyleWork', {hairstyleWork:work, banBrowse: true})}} key={`${key}Button`}>
                     <Image source={{ uri: `data:image/gif;base64,${work['hairstyleWorkImage']}` }} style={styles.cardsImage} key={`${key}OwnerImg`} />
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
             )
         })
         let noSalonComponent = (
@@ -73,13 +90,18 @@ class Profile extends Component{
         </View>
         )
         let hasSalonComponent = (
-            <View style={styles.portfolioWrapper}>
-                {portfolioCards}
+            <View style={{flex: 6, width: '100%'}}>
+                <ScrollView style={{flex: 1, width: '100%'}}>
+                    <View style={styles.portfolioWrapper}>
+                        {portfolioCards}
+                    </View>
+                </ScrollView>
             </View>
             )
         return(
                 <View style={styles.container}>
                     <View style ={{...styles.halfWrapper}}>
+                    <FontAwesome name="refresh" style={{position:'absolute', margin: 5, right: 0}} size={28} onPress={ () =>this.loadData()}/>
                         <View style={{flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', flex: 1}}>
                             <View/>
                             <TouchableOpacity onPress={ () => this._pickImage()}>

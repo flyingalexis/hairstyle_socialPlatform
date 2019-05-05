@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, ScrollView} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
@@ -92,8 +92,11 @@ class ViewSalonPage extends Component{
         }
         let portfolioCards = this.state.portfolio.map((work) => {
             let key = work.hairstyleWorkId;
+            let navFunc = () => this.props.navigation.push('HairstyleWork', {
+                hairstyleWork: {...work, ownerIcon: null}
+            });
             return (
-                <TouchableOpacity onPress={() => { }} style={styles.card} key={`${key}button`}>
+                <TouchableOpacity onPress={() => navFunc()} style={styles.card} key={`${key}button`}>
                     <Image source={{ uri: `data:image/gif;base64,${work['hairstyleWorkImage']}` }} style={styles.cardsImage} key={`${key}OwnerImg`} />
                 </TouchableOpacity>
             )
@@ -161,8 +164,12 @@ class ViewSalonPage extends Component{
                     </View>
                 </View>
                 {/* End of status bar */}
-                <View style={styles.portfolioWrapper}>
-                    {portfolioCards}
+                <View style={{flex: 6, width: '100%'}}>
+                    <ScrollView style={{flex: 1, width: '100%'}}>
+                        <View style={styles.portfolioWrapper}>
+                            {portfolioCards}
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         )
