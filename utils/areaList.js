@@ -1,0 +1,1 @@
+export const areaList= ['New territories', 'Kowloon', 'Hong Kong Island']

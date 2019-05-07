@@ -6,6 +6,8 @@ import {connect} from 'react-redux'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {updateLoginState} from '../../store/auth/actions'
+import {areaList} from '../../utils/areaList'
+import ModalSelector from 'react-native-modal-selector'
 // import PageWrapper from '../utils/pageWrapper'
 
 class CreateSalon extends Component{
@@ -17,13 +19,24 @@ class CreateSalon extends Component{
     }
 
     render(){
+        
+        let areaPickerData = []
+        for (let i = 0 ; i < areaList.length; i++){
+            areaPickerData.push({key: i+1, label: areaList[i]});
+        }
         return(
             <View style={styles.container}>
                 <Text>Salon Icon</Text>
                 <TouchableOpacity onPress={ () => this._pickImage()}>
                     <Image source={this.state.salonIcon && {uri: `data:image/gif;base64,${this.state.salonIcon}`} || require('../../assets/demo.jpeg')} style={styles.icon}/>
                 </TouchableOpacity>
-                <TextInput style={styles.textBox} placeholder="Salon Name" placeholderTextColor='#888888' onChangeText={(salonName) => this.setState({salonName})} underlineColorAndroid="transparent"/>
+
+                <TextInput style={styles.textBox} placeholder="Salon Name" placeholderTextColor='#888888' onChangeText={(salonName) => this.setState({salonName})} underlineColorAndroid="transparent"/><ModalSelector
+                    data={areaPickerData}
+                    initValue={pickAreaPlaceholder}
+                    onChange={(option)=>{ this.setState({location: option.label}) }} />
+                <TextInput style={styles.textBox} placeholder="Average Price" keyboardType={'numeric'} value={this.state.averagePrice} placeholderTextColor='#888888' onChangeText={(averagePrice) => this.handlePriceChange(averagePrice)} underlineColorAndroid="transparent"/>
+                
                 <TextInput style={styles.textBox} placeholder="contact email" placeholderTextColor='#888888' onChangeText={(contactEmail) => this.setState({contactEmail})} underlineColorAndroid="transparent"/>
                 <TextInput style={styles.multilineTextBox} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleCreateSalon()}>
@@ -34,15 +47,27 @@ class CreateSalon extends Component{
         );
     }
 
+    
+    handlePriceChange(input){
+        input = input.toString()
+        let lastDigit = input[input.length -1]
+        if ('0123456789'.includes(lastDigit)) {
+            this.setState({averagePrice:input})
+        }
+    }
+
     handleCreateSalon(){
         if (this.props.auth.salonId){
             //reject user if they have already owned a salon
             Alert.alert('You already owned a salon (each user can only register one salon)');
             return
         }
-        if (this.state.contactEmail && this.state.salonName && this.state.description && this.state.salonIcon) {
+        if (this.state.contactEmail && this.state.salonName && this.state.description && this.state.salonIcon && this.state.location && this.state.averagePrice) {
             uid = this.props.auth.uid
-            salonProfileObj = {contactEmail: this.state.contactEmail, salonName: this.state.salonName, description: this.state.description , salonIcon: this.state.salonIcon};
+            salonProfileObj = {
+                contactEmail: this.state.contactEmail, salonName: this.state.salonName, description: this.state.description , salonIcon: this.state.salonIcon,
+                location: this.state.location, averagePrice: parseInt(this.state.averagePrice)
+            };
             let profileObj;
             createSalonProfile(salonProfileObj,uid).then((salonId) => {
                 profileObj = {salonId}
@@ -51,6 +76,7 @@ class CreateSalon extends Component{
                 console.log('new profile Obj')
                 this.props.updateLoginState(profileObj)
                 Alert.alert('created Salon sucessfully');
+                this.props.navigation.navigate('Salon');
             }).catch((e) => {
                 Alert.alert(e.message);
             })
