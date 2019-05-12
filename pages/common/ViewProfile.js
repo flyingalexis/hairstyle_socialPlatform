@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button,ScrollView, TextInput} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {updateProfile, getWorksByuserId, getUserById, rateAUser, loadRatingAndLikesOnUser, likeAUser} from '../../utils/database'
+import {updateProfile, getWorksByuserId, getUserById, rateAUser, loadRatingAndLikesOnUser, likeAUser, commentOnUser, getCommentsOnUser} from '../../utils/database'
 import {updateLoginState} from '../../store/auth/actions'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { FontAwesome, AntDesign } from '@expo/vector-icons';
@@ -27,7 +27,8 @@ class ViewProfile extends Component{
             // store what needs to be updated
         },
         activeRating: false,
-        activeLikes: false
+        activeLikes: false,
+        comments: []
     }
 
     componentDidMount() {
@@ -36,6 +37,7 @@ class ViewProfile extends Component{
     }
 
     loadUserPageInfo(){
+        this.setState({loading: true})
         getUserById(this.userID).then(data => {
             this.user = data;
             this.setState({ icon_source: (data.image ? {uri: `data:image/gif;base64,${data.image}`}:require('../../assets/demo.jpeg')) });
@@ -53,6 +55,9 @@ class ViewProfile extends Component{
         }).then((data) => {
             this.setState({selfRate: data['selfRate']})
             this.setState({selfLike: data['selfLike']})
+            return getCommentsOnUser(this.userID)
+        }).then((data) => {
+            this.setState({comments: data})
             this.setState({loading: false})
         }).catch(e => {
             Alert.alert(e.message)
@@ -94,11 +99,19 @@ class ViewProfile extends Component{
         }).catch(e => Alert.alert(e.message))
     }
 
+    handleComment(){
+        console.log(`commenting : ${this.state.yourComment}`)
+        commentOnUser(this.props.auth.uid, this.props.auth.name, this.userID, this.state.yourComment).then(() =>{
+            Alert.alert('commented on a user sucessfully')
+            this.loadUserPageInfo()
+        })
+    }
+
     render(){
         if(this.state.loading){
             return null
         }
-        
+
         let portfolioCards = this.state.portfolio.map((work) => {
             let key = work.hairstyleWorkId;
             let navFunc = () => this.props.navigation.push('HairstyleWork', {
@@ -147,6 +160,66 @@ class ViewProfile extends Component{
             </TouchableOpacity>
         )
 
+        let galleryGrid = (
+            <View style={{flexDirection:'row', flex: 4}}>
+                <View style={styles.verticalSeparationLine}/>
+                <TouchableOpacity style={styles.statusGrid} onPress={() => {this.setState({comment: true})}}>
+                    <Text style={styles.statusNumber}>{this.state.portfolio.length}</Text>
+                    <Text>Gallery</Text>
+                    <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>View comments</Text>
+                </TouchableOpacity>
+                <View style={styles.verticalSeparationLine}/>
+            </View>
+        )
+
+        let commentGrid = (
+            <View style={{flexDirection:'row', flex: 4}}>
+                <View style={styles.verticalSeparationLine}/>
+                <TouchableOpacity style={styles.statusGrid} onPress={() => {this.setState({comment: false})}}>
+                    <Text style={styles.statusNumber}>{this.state.comments.length}</Text>
+                    <Text>Comment</Text>
+                    <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>view gallery</Text>
+                </TouchableOpacity>
+                <View style={styles.verticalSeparationLine}/>
+            </View>
+        )
+        
+        let commentsComponents = [];
+        this.state.comments.map(comment => {
+            let key = comment.index
+            commentsComponents.push(
+                <View key={`commentWrapper${key}`} style={styles.commentWrapper}>
+                    <Text key={`commentowner${key}`} style={styles.commentUsername}>{comment.username}</Text>
+                    <Text key={`comment${key}`} style={styles.comment}>{comment.comment}</Text>
+                </View>
+            )
+        })
+
+        let commentList  = (
+            <View style={{flex: 6, width: '100%', justifyContent:'center', alignItems: 'center'}}>
+                <ScrollView style={{flex: 1, width: '90%', marginTop: 10}}>
+                    {commentsComponents}
+                </ScrollView>
+                {this.props.auth &&
+                <View style={styles.commentBarWrapper}>
+                    <TextInput placeholder="Type in your comments" placeholderTextColor='#888888' onChangeText={(yourComment) => this.setState({yourComment}) } style={styles.textBox}/>
+                    <TouchableOpacity onPress={async ()=> await this.handleComment()} style={styles.inviteButton}>
+                        <Text style={styles.inviteButtonText}>Comment</Text>
+                    </TouchableOpacity>
+                </View>}
+            </View>
+        )
+
+        let portfolioCardList = (
+            <View style={{flex: 6, width: '100%'}}>
+                <ScrollView style={{flex: 1, width: '100%'}}>
+                    <View style={styles.portfolioWrapper}>
+                        {portfolioCards}
+                    </View>
+                </ScrollView>
+            </View>
+        )
+
         return(
                 <View style={styles.container}>
                     <View style ={{...styles.halfWrapper}}>
@@ -160,22 +233,13 @@ class ViewProfile extends Component{
                         {/* status bar */}
                         <View style={styles.statusWrapper}>
                             {this.state.activeLikes? activeLikesGrid: inactiveLikesGrid}
-                            <View style={{flexDirection:'row', flex: 4}}>
-                                <View style={styles.verticalSeparationLine}/>
-                                <View style={styles.statusGrid}>
-                                    <Text style={styles.statusNumber}>{this.state.portfolio.length}</Text>
-                                    <Text>Gallery</Text>
-                                </View>
-                                <View style={styles.verticalSeparationLine}/>
-                            </View>
+                            {this.state.comment? commentGrid: galleryGrid }
                             {this.state.activeRating? activeRatingGrid: inactiveRatingGrid}
                         </View>
                     </View>
                     {/* End of status bar */}
                     {/* {this.props.auth.salonId ? hasSalonComponent: noSalonComponent} */}
-                    <View style={styles.portfolioWrapper}>
-                        {portfolioCards}
-                    </View>
+                    {this.state.comment ? commentList :portfolioCardList}
                 </View>
                 )
     }
@@ -264,7 +328,47 @@ const styles = StyleSheet.create({
     cardsImage:{
         width:'100%',
         height:'100%'
-    }
+    },
+    commentBarWrapper:{
+        bottom: 0,
+        width: '90%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 20,
+        marginVertical: 5
+    },
+    textBox:{
+        flex: 8,
+        height: 40,
+        fontSize:16,
+        color: '#888888',
+        borderBottomWidth: 2,
+        borderBottomColor: '#ACACAC',
+        backgroundColor: "#ffffff",
+    },
+    inviteButton:{
+        height: 40,
+        flex: 3,
+        marginLeft: 5,
+        backgroundColor: "#EA6652",
+        justifyContent:'center',
+        alignItems: 'center'
+    },
+    inviteButtonText:{
+        color: 'white',
+        fontSize: 20
+    },
+    commentUsername: {
+        fontWeight:'bold',
+        flex: 3
+    },
+    comment: {
+        flex: 9,
+        marginLeft: 5
+    },
+    commentWrapper:{
+        flexDirection:'row'
+    },
 })
 
 const mapStateToProps = state => ({

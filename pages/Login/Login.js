@@ -37,7 +37,9 @@ class Login extends Component{
             // temp_password = "password"
             // temp_email = "demo2@demo.com"
             // temp_password = "password"
-            temp_email = "slave1@demo.com"
+            // temp_email = "slave1@demo.com"
+            // temp_password = "password"
+            temp_email = "guest@demo.com"
             temp_password = "password"
             try{
                 // user = await firebaseLogin(this.state.email, this.state.password);

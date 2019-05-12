@@ -10,6 +10,7 @@ import {areaList} from '../../utils/areaList'
 import ModalSelector from 'react-native-modal-selector'
 // import PageWrapper from '../utils/pageWrapper'
 
+const pickAreaPlaceholder = "pick your Area -->"
 class CreateSalon extends Component{
     state = {}
     static navigationOptions = navOptions

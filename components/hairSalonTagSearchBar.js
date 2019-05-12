@@ -6,7 +6,7 @@ import ModalSelector from 'react-native-modal-selector'
 
 class TagSearchBar extends Component {
     componentDidUpdate(){
-        console.log('subscribe state changes')
+        console.log('subscribe state changes')  
     }
     
     state={
@@ -29,6 +29,7 @@ class TagSearchBar extends Component {
                     <ModalSelector
                         style={styles.select}
                         selectStyle= {styles.select}
+                        selectTextStyle= {{fontSize: 13}}
                         data={sortByList}
                         initValue={""}
                         onChange={(option)=>{ this.setState({sortBy: option.label})}}

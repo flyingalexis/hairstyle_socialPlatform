@@ -28,7 +28,9 @@ class HairstyleWork extends Component {
         this.hairstyleWork = this.props.navigation.getParam('hairstyleWork');
         getSalonById(this.hairstyleWork.salonId).then((data) => {
             this.salonInfo = data
-            console.log(`hairstylework ID : ${this.hairstyleWork.hairstyleWorkId}`)
+            if(!this.props.auth){
+                return false
+            }
             return loadLikesOnHairstyleWork(this.props.auth.uid, this.hairstyleWork.hairstyleWorkId)
         }).then((liked) => {
             this.setState({liked})
@@ -71,6 +73,10 @@ class HairstyleWork extends Component {
     }
 
     handleLike(){
+        if(!this.props.auth){
+            Alert.alert('please Login to proceed')
+            return
+        }
         console.log('like some artwork like a boss')
         likeAHairstyleWork(this.props.auth.uid, this.hairstyleWork.hairstyleWorkId, !this.state.liked).then(() => {
             this.setState({liked: !this.state.liked})
@@ -220,7 +226,8 @@ const styles = StyleSheet.create({
         flex: 3
     },
     comment: {
-        flex: 9
+        flex: 9,
+        marginLeft: 5
     },
     commentWrapper:{
         flexDirection:'row'

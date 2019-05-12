@@ -421,3 +421,77 @@ export let getCommentsOnHairstyleWork = async(hairstyleWorkId, lastVisible = nul
   
   return {comments, endOfPage};
 }
+
+export let commentOnUser = async (uid, username , targetUid, comment) =>{
+  let db = firebase.firestore();
+  let doc = await db.collection("profile").doc(targetUid).get()
+  let userData = doc.data()
+  let commentCount = (userData.commentCount? userData.commentCount + 1: 1)
+  let docRef = db.collection("profile").doc(targetUid).collection('comment').doc();
+  await docRef.set({uid,username,comment,index: commentCount,  date: new Date().valueOf()})
+  await db.collection("profile").doc(targetUid).update({commentCount})
+}
+
+export let getCommentsOnUser = async(uid) => {
+  // untested
+  let db = firebase.firestore();
+  let docRef = await db.collection("profile").doc(uid).collection("comment").orderBy('index', 'desc')
+  let snapshots = await docRef.get()
+  let comments = []
+  for (comment of snapshots.docs){
+    data = comment.data()
+    comments.push(data)
+  }
+  
+  return comments;
+}
+
+export let commentOnSalon = async (uid, username , targetSid, comment) =>{
+  let db = firebase.firestore();
+  let doc = await db.collection("salonProfile").doc(targetSid).get()
+  let salonData = doc.data()
+  let commentCount = (salonData.commentCount? salonData.commentCount + 1: 1)
+  let docRef = db.collection("salonProfile").doc(targetSid).collection('comment').doc();
+  await docRef.set({uid,username,comment,index: commentCount,  date: new Date().valueOf()})
+  await db.collection("salonProfile").doc(targetSid).update({commentCount})
+}
+
+export let getCommentsOnSalon = async(sid) => {
+  // untested
+  let db = firebase.firestore();
+  let docRef = await db.collection("salonProfile").doc(sid).collection("comment").orderBy('index', 'desc')
+  let snapshots = await docRef.get()
+  let comments = []
+  for (comment of snapshots.docs){
+    data = comment.data()
+    comments.push(data)
+  }
+  
+  return comments;
+}
+
+export let getNewsFeed = async() => {
+  let db = firebase.firestore();
+  let latestHairstyleSnapshot = await db.collection("hairstyleWork").orderBy('date', 'desc').limit(2).get()
+  let latestHairstyle = []
+  for (hairstyle of latestHairstyleSnapshot.docs){
+    data = hairstyle.data()
+    userDoc = await getUserById(data['ownerId'])
+    latestHairstyle.push({...data, hairstyleWorkId :hairstyle.id, ownerIcon: userDoc['image']})
+  }
+  let mostLikedHairstyleSnapshot = await db.collection("hairstyleWork").orderBy('likes', 'desc').limit(2).get()
+  let mostLikedHairstyle = []
+  for (hairstyle of mostLikedHairstyleSnapshot.docs){
+    data = hairstyle.data()
+    userDoc = await getUserById(data['ownerId'])
+    mostLikedHairstyle.push({...data, hairstyleWorkId :hairstyle.id, ownerIcon: userDoc['image']})
+  }
+  // let mostLikedSalonSnapshot = await db.collection("salonProfile").orderBy('likes', 'desc').limit(2).get()
+  // let mostLikedSalon = []
+  // for (salon of mostLikedSalonSnapshot.docs){
+  //   data = salon.data()
+  //   mostLikedSalon.push(data)
+  // }
+  // return {mostLikedHairstyle, mostLikedSalon, latestHairstyle}
+  return {mostLikedHairstyle, latestHairstyle}
+}

@@ -15,10 +15,21 @@ export default class App extends React.Component {
   constructor(){
     super()
   }
-  async componentDidMount(){
-    await authLoading(store);
+  state={
+    loading: true
   }
+  
+  componentDidMount(){
+    this.setState({loading: true})
+    authLoading(store).then(() => {
+      this.setState({loading: false})
+    });
+  }
+
   render() {
+    if(this.state.loading){
+      return null
+    }
     const Drawer_nav = createAppContainer(AppDrawerNavigator(this.props));
     return (
       <Provider store={store}>

@@ -2,85 +2,89 @@ import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Image,TextInput} from 'react-native'
 import {connect} from 'react-redux'
 import navOptions from '../../utils/drawerBarNavOptions'
-import { ImagePicker, Permissions } from 'expo';
+import {getNewsFeed} from '../../utils/database'
+import {HairstyleCard} from '../../components/hairstyleCard'
+import { FontAwesome } from '@expo/vector-icons';
+import {Icon} from 'native-base';
 
 
 class Splash extends Component{
-    async componentWillMount(){
-        await this.getLocationAsync();
-    }
-
-    
     static navigationOptions = navOptions
 
-    state = {
-      image: null,
-    };
+    state={
+        loading: true
+    }
+    componentDidMount(){
+        rightIcon = <FontAwesome name="refresh" style={{margin: 5, right: 5}} size={20} onPress={ () => this.loadData()}/>
+        this.props.navigation.setParams({rightIcon: rightIcon});
+        this.loadData()
+    }
+
+    loadData(){
+        console.log('load Data')
+        this.setState({loading:true})
+        getNewsFeed().then(data => {
+            this.newsFeedData = data;
+            this.setState({loading:false})
+            console.log(Object.keys(data.latestHairstyle[0]))
+        })
+    }
+
+    navigationFuction(hairstyleWork){
+        console.log(Object.keys(hairstyleWork))
+        this.props.navigation.navigate('HairstyleWork', {
+            hairstyleWork
+        });
+    }
+
     render(){
-      let { image } = this.state;
+        if(this.state.loading){
+            return null;
+        }
+        
+        let latestHairstyleCards = []
+        for(let i = 0 ; i< this.newsFeedData.latestHairstyle.length ; i++){
+            latestHairstyleCards.push(<HairstyleCard hairstyleWork={this.newsFeedData.latestHairstyle[i]} key ={`latestHairstyle${i}`} onPress={ this.navigationFuction.bind(this)}/>)
+        }
+        let mostLikedHairstyleCards = []
+        for(let i = 0 ; i< this.newsFeedData.mostLikedHairstyle.length ; i++){
+            mostLikedHairstyleCards.push(<HairstyleCard hairstyleWork={this.newsFeedData.mostLikedHairstyle[i]} key ={`mostLikedHairstyle${i}`} onPress={ this.navigationFuction.bind(this)}/>)
+        }
+        
+
         return(
-                <View style={styles.container}>
-                    <Text style={styles.title}> Hey this is the Splash page</Text>
-                    <Button onPress={() => this.props.navigation.navigate('Login')} title="GOTO_Login" color="#841584"/>
-                    <Button onPress={() => {}} title="Redux test" color="#841584"/>
-                    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-                    <Button
-                        title="Pick an image from camera roll"
-                        onPress={this._pickImage}
-                        style={styles.submitButton}
-                    />
-                    <View style={styles.submitButton}>
-                    <Button title="Pick an image from camera roll" onPress={()=>{}}> Hey this is the Splash page</Button>
-                    </View>
+            <View style={styles.container}>
+                <Text style={styles.subtitle}>Recent Hairstyle</Text>
+                <View style={{flexDirection: 'row'}}>
+                    {latestHairstyleCards}
                 </View>
+                <Text style={styles.subtitle}>Most Liked Hairstyles</Text>
+                <View style={{flexDirection: 'row'}}>
+                    {mostLikedHairstyleCards}
+                </View>
+            </View>
         );
     }
-
-    _pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: true,
-          aspect: [3, 3],
-        });
-    
-        console.log(result);
-    
-        if (!result.cancelled) {
-          this.setState({ image: result.uri });
-        }
-    }
-
-    getLocationAsync = async() => {
-        // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
-        const { status, permissions } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status === 'granted') {
-          return ;
-        } else {
-          throw new Error('Location permission not granted');
-        }
-      }
-
-    // image picker demo
-    
 }
 
 
 const styles = StyleSheet.create({  
     container: {
-        backgroundColor: 'green',
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
+        alignSelf: 'center',
         height:'100%',
-        width: '100%'
+        width: '90%',
+        justifyContent: 'space-between',
+        marginBottom: 20
     },
     title:{
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 20
     },
-    submitButton: {
-        position: 'absolute',
-        bottom:0,
-        left:0,
+    subtitle:{
+        fontSize: 18
     }
 })
 

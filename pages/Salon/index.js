@@ -4,7 +4,7 @@ import ManageMember from './ManageMember';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import React from 'react'
-import HairstyleWork from '../SearchSalon/HairstyleWork'
+import HairstyleWork from '../common/HairstyleWork'
 
 export default createBottomTabNavigator({
     SalonPage: {

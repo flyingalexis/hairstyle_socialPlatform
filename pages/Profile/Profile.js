@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, ScrollView} from 'react-native'
+import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, ScrollView, TextInput} from 'react-native'
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {updateProfile, getWorksByuserId,removeHairstyleWork} from '../../utils/database'
+import {updateProfile, getWorksByuserId,removeHairstyleWork, commentOnUser, getCommentsOnUser} from '../../utils/database'
 import {updateLoginState} from '../../store/auth/actions'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { FontAwesome } from '@expo/vector-icons';
@@ -21,7 +21,8 @@ class Profile extends Component{
         icon_source : require('../../assets/demo.jpeg') ,
         update_profile: {
             // store what needs to be updated
-        }
+        },
+        comments: []
     }
 
     async componentWillMount(){
@@ -42,17 +43,17 @@ class Profile extends Component{
 
     loadData (){
         this.setState({loading: true})
-        if (this.props.auth && this.props.auth.salonId){
-            getWorksByuserId(this.props.auth.uid).then(data => {
-                this.setState({portfolio: data})
-                this.setState({loading: false})
-                // loading state
-            }).catch(e => {
-                Alert.alert(e.message)
-            })
-        }else{
+        getWorksByuserId(this.props.auth.uid).then(data => {
+            this.setState({portfolio: data})
             this.setState({loading: false})
-        }
+            // loading state
+            return getCommentsOnUser(this.props.auth.uid)
+        }).then((data) => {
+            this.setState({comments: data})
+            this.setState({loading: false})
+        }).catch(e => {
+            Alert.alert(e.message)
+        })
     }
 
     removeHairstyleWork(workId){
@@ -64,6 +65,14 @@ class Profile extends Component{
             Alert.alert(e.message)
         })
     }
+
+    handleComment(){
+        commentOnUser(this.props.auth.uid, this.props.auth.name, this.props.auth.uid, this.state.yourComment).then(() =>{
+            Alert.alert('commented on a user sucessfully')
+            this.loadData()
+        })
+    }
+
     render(){
         if(this.state.loading || !this.props.auth){
             return null
@@ -97,7 +106,67 @@ class Profile extends Component{
                     </View>
                 </ScrollView>
             </View>
+        )
+        
+        let galleryGrid = (
+            <View style={{flexDirection:'row', flex: 4}}>
+                <View style={styles.verticalSeparationLine}/>
+                <TouchableOpacity style={styles.statusGrid} onPress={() => {this.setState({comment: true})}}>
+                    <Text style={styles.statusNumber}>{this.state.portfolio.length}</Text>
+                    <Text>Gallery</Text>
+                    <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>View comments</Text>
+                </TouchableOpacity>
+                <View style={styles.verticalSeparationLine}/>
+            </View>
+        )
+
+        let commentGrid = (
+            <View style={{flexDirection:'row', flex: 4}}>
+                <View style={styles.verticalSeparationLine}/>
+                <TouchableOpacity style={styles.statusGrid} onPress={() => {this.setState({comment: false})}}>
+                    <Text style={styles.statusNumber}>{this.state.comments.length}</Text>
+                    <Text>Comment</Text>
+                    <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>view gallery</Text>
+                </TouchableOpacity>
+                <View style={styles.verticalSeparationLine}/>
+            </View>
+        )
+        
+        let commentsComponents = [];
+        this.state.comments.map(comment => {
+            let key = comment.index
+            commentsComponents.push(
+                <View key={`commentWrapper${key}`} style={styles.commentWrapper}>
+                    <Text key={`commentowner${key}`} style={styles.commentUsername}>{comment.username}</Text>
+                    <Text key={`comment${key}`} style={styles.comment}>{comment.comment}</Text>
+                </View>
             )
+        })
+
+        let commentList  = (
+            <View style={{flex: 6, width: '100%', justifyContent:'center', alignItems: 'center'}}>
+                <ScrollView style={{flex: 1, width: '90%', marginTop: 10}}>
+                    {commentsComponents}
+                </ScrollView>
+                <View style={styles.commentBarWrapper}>
+                    <TextInput placeholder="Type in your comments" placeholderTextColor='#888888' onChangeText={(yourComment) => this.setState({yourComment}) } style={styles.textBox}/>
+                    <TouchableOpacity onPress={async ()=> await this.handleComment()} style={styles.inviteButton}>
+                        <Text style={styles.inviteButtonText}>Comment</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+
+        let portfolioCardList = (
+            <View style={{flex: 6, width: '100%'}}>
+                <ScrollView style={{flex: 1, width: '100%'}}>
+                    <View style={styles.portfolioWrapper}>
+                        {portfolioCards}
+                    </View>
+                </ScrollView>
+            </View>
+        )
+
         return(
                 <View style={styles.container}>
                     <View style ={{...styles.halfWrapper}}>
@@ -117,14 +186,7 @@ class Profile extends Component{
                                 <Text style={styles.statusNumber}>{this.props.auth.likes?this.props.auth.likes:0}</Text>
                                 <Text>Likes</Text>
                             </View>
-                            <View style={{flexDirection:'row', flex: 4}}>
-                                <View style={styles.verticalSeparationLine}/>
-                                <View style={styles.statusGrid}>
-                                    <Text style={styles.statusNumber}>{this.state.portfolio.length}</Text>
-                                    <Text>Gallery</Text>
-                                </View>
-                                <View style={styles.verticalSeparationLine}/>
-                            </View>
+                            {this.state.comment? commentGrid: galleryGrid }
                             <View style={styles.statusGrid}>
                                 <Text style={styles.statusNumber}>{this.props.auth.ratings?this.props.auth.ratings:'-'}</Text>
                                 <Text>Ratings</Text>
@@ -133,7 +195,7 @@ class Profile extends Component{
                     </View>
                     {/* End of status bar */}
                     {/* {this.props.auth.salonId ? hasSalonComponent: noSalonComponent} */}
-                    {this.props.auth.salonId ? hasSalonComponent: noSalonComponent}
+                    {this.state.comment ? commentList : this.props.auth.salonId ? hasSalonComponent: noSalonComponent }
                 </View>
                 )
     }
@@ -268,7 +330,47 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         margin: 5
-    }
+    },
+    commentBarWrapper:{
+        bottom: 0,
+        width: '90%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 20,
+        marginVertical: 5
+    },
+    textBox:{
+        flex: 8,
+        height: 40,
+        fontSize:16,
+        color: '#888888',
+        borderBottomWidth: 2,
+        borderBottomColor: '#ACACAC',
+        backgroundColor: "#ffffff",
+    },
+    inviteButton:{
+        height: 40,
+        flex: 3,
+        marginLeft: 5,
+        backgroundColor: "#EA6652",
+        justifyContent:'center',
+        alignItems: 'center'
+    },
+    inviteButtonText:{
+        color: 'white',
+        fontSize: 20
+    },
+    commentUsername: {
+        fontWeight:'bold',
+        flex: 3
+    },
+    comment: {
+        flex: 9,
+        marginLeft: 5
+    },
+    commentWrapper:{
+        flexDirection:'row'
+    },
 })
 
 const mapStateToProps = state => ({

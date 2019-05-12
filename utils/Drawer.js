@@ -8,7 +8,7 @@ import Register from '../pages/Register'
 import Profile from '../pages/Profile'
 import CreateSalon from '../pages/CreateSalon'
 import AddHairstyleWork from '../pages/AddHairstyleWork';
-import SearchSalon from '../pages/SearchSalon';
+import HairstyleSearch from '../pages/HairstyleSearch';
 import Salon from '../pages/Salon';
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
@@ -149,7 +149,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
     }
   },
   "Hairstyle Search": {
-    screen:SearchSalon,
+    screen:HairstyleSearch,
     navigationOptions: {
       drawerIcon: ({ tintColor }) => (
         <FontAwesome name="crosshairs" size={20} style={{ color: tintColor}}/>
