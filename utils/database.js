@@ -539,7 +539,6 @@ export let searchSalonByName = async(price = null , location = null , salonname 
   }
   let salons = []
   for (salon of snapshots.docs){
-    console.log('docs')
     data = salon.data()
     userDoc = await getUserById(data['owner'])
     data = {...data, salonId :salon.id, ownername: userDoc['name'],ownerIcon: userDoc['image']}

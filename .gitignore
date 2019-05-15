@@ -2,3 +2,7 @@
 node_modules/
 .watchmanconfig
 coverage/
+components/.DS_Store
+.DS_Store
+pages/SalonSearch/.DS_Store
+pages/.DS_Store
