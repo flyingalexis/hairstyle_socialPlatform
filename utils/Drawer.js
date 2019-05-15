@@ -14,6 +14,8 @@ import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
 import { MaterialIcons, AntDesign,FontAwesome,Entypo,Foundation } from '@expo/vector-icons';
+import SalonSearch from '../pages/SalonSearch';
+
 
 const authedHiddenDrawerItems = [
   'Login',
@@ -178,6 +180,14 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
     navigationOptions: {
       drawerIcon: ({ tintColor }) => (
         <Foundation name="social-myspace" size={20} style={{ color: tintColor}}/>
+      )
+    }
+  },
+  SalonSearch: {
+    screen:SalonSearch,
+    navigationOptions: {
+      drawerIcon: ({ tintColor }) => (
+        <AntDesign name="home" size={20} style={{ color: tintColor}}/>
       )
     }
   }

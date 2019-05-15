@@ -5,10 +5,6 @@ import ModalSelector from 'react-native-modal-selector'
 
 
 class TagSearchBar extends Component {
-    componentDidUpdate(){
-        console.log('subscribe state changes')  
-    }
-    
     state={
         sortBy: null,
         tag: null
