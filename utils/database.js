@@ -330,8 +330,70 @@ export let searchHairstyleWorksByTag = async(sortBy= 'date' , tag = null , lastV
     data = hairstylework.data()
     userDoc = await getUserById(data['ownerId'])
     data = {...data, hairstyleWorkId :hairstylework.id, ownerIcon: userDoc['image']}
+    console.log(hairstylework.id)
     hairstyleWorks.push(data)
   }
   
   return {hairstyleWorks, endOfPage};
+}
+
+export let searchSalonByName = async(price = null , location = null , salonname = null, lastVisible = null) => {
+  let db = firebase.firestore();
+  let docRef = db.collection("salonProfile")
+
+  if(price==null){
+    docRef = docRef.where("avgprice", ">=", 0)
+  } else if(price==1){
+    docRef = docRef.where("avgprice", ">=", 1).where("avgprice", "<=", 50)
+  } else if(price==2){
+    docRef = docRef.where("avgprice", ">=", 51).where("avgprice", "<=", 100)
+  } else if(price==3){
+    docRef = docRef.where("avgprice", ">=", 101).where("avgprice", "<=", 150)
+  }  else if(price==4){
+    docRef = docRef.where("avgprice", ">=", 151).where("avgprice", "<=", 200)
+  } else{
+    docRef = docRef.where("avgprice", ">=", 201)
+  }
+
+  if(location==null){
+      
+  } else if(location==1){
+    docRef = docRef.where('location', '==', "Hong Kong Island")
+  } else if(location==2){
+    docRef = docRef.where('location', '==', "Kowloon")
+  } else{
+    docRef = docRef.where('location', '==', "New Territories")
+  }
+
+  if(salonname!=null){
+    docRef =  docRef.where('salonname', '==', salonname)
+  } 
+
+  docRef = docRef.orderBy("avgprice")
+
+  if (lastVisible != null){
+    docRef = docRef.startAfter(lastVisible)
+  }
+
+  //ten hairstyle in a page
+  docRef = docRef.limit(10)
+
+  let snapshots = await docRef.get()
+  let endOfPage = null
+  console.log(snapshots.docs.length)
+  if (snapshots.docs.length > 0){
+    endOfPage = snapshots.docs[snapshots.docs.length-1]
+  }
+  let salons = []
+  for (salon of snapshots.docs){
+    console.log('docs')
+    data = salon.data()
+    userDoc = await getUserById(data['owner'])
+    data = {...data, salonId :salon.id, ownername: userDoc['name'],ownerIcon: userDoc['image']}
+    salons.push(data)
+  }
+  
+  return {salons, endOfPage};
+
+
 }

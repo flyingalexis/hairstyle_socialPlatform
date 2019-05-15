@@ -13,6 +13,8 @@ import Salon from '../pages/Salon';
 import {connect} from 'react-redux'
 import {firebaseLogout} from '../utils/auth'
 import {cleanLoginState} from '../store/auth/actions'
+import SalonSearch from '../pages/SalonSearch';
+
 
 const authedHiddenDrawerItems = [
   'Login',
@@ -120,6 +122,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
   Register: Register,
   Profile: Profile,
   "Hairstyle Search": SearchSalon,
+  "Salon Search" : SalonSearch,
   CreateSalon: CreateSalon,
   AddHairstyleWork: AddHairstyleWork,
   Salon: Salon
