@@ -1,6 +1,5 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
-import {storeLoginState} from '../store/auth/actions'
 import {Alert} from 'react-native'
 
 var config = {
@@ -14,7 +13,7 @@ var config = {
 };
 
 // yet tested
-export let authLoading = async (store) => {
+export let authLoading = async (callback) => {
   if (!firebase.apps.length) {
     firebase.initializeApp(config);
   }
@@ -23,25 +22,18 @@ export let authLoading = async (store) => {
       
       let uid = user['uid']
       let db = firebase.firestore()
-      let userProfile = await db.collection("profile").where('uid', '==' , uid).limit(1).get()
-      let profileData = {}
-      userProfile.forEach(element => {
-        profileData = element.data()
-      });
+      let userProfile = await db.collection("profile").doc(uid).get()
+      let profileData = userProfile.data()
       profileData['auth'] = user
-      store.dispatch(storeLoginState(profileData))
+      // store.dispatch(storeLoginState(profileData))
+      callback(profileData)
     }
   })
 }
 
 export let createAccount = async (email, password) => {
   console.log('create account')
-  return await firebase.auth().createUserWithEmailAndPassword(email, password).then(function(credential){
-    return credential;
-  }).catch(function(error) {
-    Alert.alert(error.message);
-    return null;
-  });
+  return firebase.auth().createUserWithEmailAndPassword(email, password)
 }
 
 export let firebaseLogin = async (email, password) => {
@@ -61,13 +53,5 @@ export let firebaseLogin = async (email, password) => {
 }
 
 export let firebaseLogout = async () => {
-  await firebase.auth().signOut().then(function(){
-    Alert.alert('Loggout sucessfully');
-  }).catch(function(err){
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    Alert.alert(error.message);
-    return null;
-  })
+  return firebase.auth().signOut()
 }

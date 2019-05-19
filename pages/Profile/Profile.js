@@ -51,6 +51,7 @@ class Profile extends Component{
         }).then((data) => {
             this.setState({comments: data})
             this.setState({loading: false})
+            this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../../assets/demo.jpeg')) });
         }).catch(e => {
             Alert.alert(e.message)
         })

@@ -7,6 +7,7 @@ import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import authReducer from './store/auth/reducer'
 import {androidTimerFix} from './utils/platformFix'
+import {storeLoginState} from './store/auth/actions'
 
 androidTimerFix()
 const store = createStore(authReducer)
@@ -21,7 +22,9 @@ export default class App extends React.Component {
   
   componentDidMount(){
     this.setState({loading: true})
-    authLoading(store).then(() => {
+    console.log('preload')
+    let callback = (profileData) => store.dispatch(storeLoginState(profileData))
+    authLoading(callback).then(() => {
       this.setState({loading: false})
     });
   }

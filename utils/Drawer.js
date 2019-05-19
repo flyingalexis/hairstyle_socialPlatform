@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity, Platform, StatusBar} from 'react-native';
+import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity, Platform, StatusBar, Alert} from 'react-native';
 import { createDrawerNavigator , createAppContainer , DrawerItems} from 'react-navigation'
 import React from 'react'
 import Login from '../pages/Login'
@@ -24,18 +24,18 @@ const authedHiddenDrawerItems = [
 
 const unauthedHiddenDrawerItems = [
   'Profile',
-  'CreateSalon',
+  'Create Salon',
   'Salon',
-  'AddHairstyleWork'
+  'Add Hairstyle Work'
 ]
 
 const haveSalonHiddenDrawerItems = [
-  'CreateSalon'
+  'Create Salon'
 ]
 
 const noSalonHiddenDrawerItems = [
   'Salon',
-  'AddHairstyleWork'
+  'Add Hairstyle Work'
 ]
 
 const CustomDrawerComponent = (props) => {
@@ -101,9 +101,13 @@ const CustomDrawerComponent = (props) => {
 }
 
 const logout = async (props) => {
-  await firebaseLogout();
-  await props.dispatch(cleanLoginState());
-  props.navigation.navigate('Login');
+  firebaseLogout().then(() => {
+    props.dispatch(cleanLoginState());
+    Alert.alert("logged out")
+    props.navigation.navigate('Login');
+  }).catch(e => {
+    Alert.alert(e.message)
+  })
 }
 
 const mapStateToProps = state => ({

@@ -14,8 +14,8 @@ class Login extends Component{
         return(
             <View style={styles.container}>
                 <Image style={styles.logo} source={require('../../assets/hairo_logo.gif')}/>
-                <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
-                <TextInput style={styles.textBox} secureTextEntry={true} placeholder="Password" placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.textBox} placeholder="Email" placeholderTextColor='#888888' value={this.state.email}  onChangeText={(email) => this.setState({email})} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.textBox} secureTextEntry={true} placeholder="Password" value={this.state.password} placeholderTextColor='#888888' onChangeText={(password) => this.setState({password})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleLogin()}>
                     <Text style={styles.loginButtonText}>LOGIN</Text>
                 </TouchableOpacity>
@@ -39,11 +39,11 @@ class Login extends Component{
             // temp_password = "password"
             // temp_email = "slave1@demo.com"
             // temp_password = "password"
-            temp_email = "guest@demo.com"
-            temp_password = "password"
+            // temp_email = "guest@demo.com"
+            // temp_password = "password"
             try{
-                // user = await firebaseLogin(this.state.email, this.state.password);
-                user = await firebaseLogin(temp_email, temp_password);
+                user = await firebaseLogin(this.state.email, this.state.password);
+                // user = await firebaseLogin(temp_email, temp_password);
                 if(user){
                     await this.props.updateLoginState(user);
                     Alert.alert('login sucessfully');
@@ -53,6 +53,8 @@ class Login extends Component{
                 }
             }catch(e){
                 Alert.alert(e.message);
+            }finally{
+                this.setState({password: null, email: null})
             }
         }else{
             Alert.alert('no login info');
