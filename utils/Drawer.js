@@ -159,7 +159,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
     }
     
   },
-  CreateSalon: {
+  "Create Salon": {
     screen:CreateSalon,
     navigationOptions: {
       drawerIcon: ({ tintColor }) => (
@@ -167,7 +167,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
       )
     }
   },
-  AddHairstyleWork: {
+  "Add Hairstyle Work": {
     screen:AddHairstyleWork,
     navigationOptions: {
       drawerIcon: ({ tintColor }) => (
@@ -183,7 +183,7 @@ export const AppDrawerNavigator = (props) => (createDrawerNavigator({
       )
     }
   },
-  SalonSearch: {
+  "Salon Search": {
     screen:SalonSearch,
     navigationOptions: {
       drawerIcon: ({ tintColor }) => (

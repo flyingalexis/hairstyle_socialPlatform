@@ -197,6 +197,14 @@ export let addAdminToSalon = async (sid, uid) => {
   })
 }
 
+export let removeAdminFromSalon = async (sid, uid) => {
+  let db = firebase.firestore();
+  let docRef = db.collection("salonProfile").doc(sid);
+  return docRef.update({
+    adminList: firebase.firestore.FieldValue.arrayRemove(uid)
+  })
+}
+
 export let rateAUser = async (targetUid, rate, uid) =>{
   let db = firebase.firestore();
   let docRef = db.collection("profile").doc(targetUid).collection('ratings').doc(uid);
@@ -477,6 +485,8 @@ export let getNewsFeed = async() => {
   let latestHairstyle = []
   for (hairstyle of latestHairstyleSnapshot.docs){
     data = hairstyle.data()
+    console.log(hairstyle.id)
+    console.log(data['ownerId'])
     userDoc = await getUserById(data['ownerId'])
     latestHairstyle.push({...data, hairstyleWorkId :hairstyle.id, ownerIcon: userDoc['image']})
   }
@@ -519,7 +529,7 @@ export let searchSalonByName = async(price = null , location = null , salonname 
   }
 
   if(salonname!=null){
-    docRef =  docRef.where('salonname', '==', salonname)
+    docRef =  docRef.where('salonName', '==', salonname)
   } 
 
   docRef = docRef.orderBy("avgprice")

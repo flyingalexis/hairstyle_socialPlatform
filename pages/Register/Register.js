@@ -44,18 +44,16 @@ class Register extends Component{
     async handleRegister(){
         if (this.state.email && this.state.password && this.state.name) {
             // firebaseLogin(this.state.email, this.state.password);
-            let credential = await createAccount(this.state.email, this.state.password);
-            if(credential){
+            createAccount(this.state.email, this.state.password).then( (credential) => {
                 let profile = {
                     "name": this.state.name,
                     "email": credential['user']['email'],
                     "uid": credential['user']['uid']
                 }
-                createProfile(profile).then(() => 
-                    Alert.alert('Registered sucessfully'))
-                    .catch(err => 
-                        Alert.alert(error.message))
-            }
+                return createProfile(profile)
+            }). then( () => {
+                Alert.alert('registered sucessfully')
+            }).catch( (e) => Alert.alert(e.message))
         }else{
             Alert.alert('no Register info');
         }

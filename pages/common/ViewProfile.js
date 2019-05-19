@@ -128,7 +128,7 @@ class ViewProfile extends Component{
             <TouchableOpacity style={styles.statusGrid} onPress={() => {this.handleRatingActive()}}>
                 <Text style={styles.statusNumber}>{this.state.rating?this.state.rating:'-'}</Text>
                 <Text>Ratings</Text>
-                <Text style={{fontSize:10, left:'50%', position: 'absolute', bottom: 0}}>Press to rate</Text>
+                <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>Press to rate</Text>
             </TouchableOpacity>
         )
 
@@ -148,7 +148,7 @@ class ViewProfile extends Component{
             <TouchableOpacity style={styles.statusGrid} onPress={() => {this.handleLikesActive()}}>
                 <Text style={styles.statusNumber}>{this.state.likes?this.state.likes:0}</Text>
                 <Text>Likes</Text>
-                <Text style={{fontSize:10, left:'50%', position: 'absolute', bottom: 0}}>Press to like</Text>
+                <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>Press to like</Text>
             </TouchableOpacity>
         )
 

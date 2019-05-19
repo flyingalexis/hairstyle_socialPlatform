@@ -11,6 +11,10 @@ class SalonSearchBar extends Component {
         salonname: null
     }
     handleSearch(){
+        if(this.state.salonname == ''){
+            this.props.onSearch(this.state.price, this.state.location, null);
+        }
+
         this.props.onSearch(this.state.price, this.state.location, this.state.salonname);
     }
 
@@ -32,8 +36,8 @@ class SalonSearchBar extends Component {
         return (
             <View>
                 <View style={styles.searchBar}>
-                    <View style={styles.sortByWrapper}>
-                        <Text>Price:</Text>
+                    <View style={{...styles.sortByWrapper, flexBasis: '50%'}}>
+                        <Text style={styles.label}>Price:</Text>
                         <ModalSelector
                             style={styles.select}
                             selectStyle= {styles.select}
@@ -43,26 +47,25 @@ class SalonSearchBar extends Component {
                             selectedItemTextStyle = {styles.selectText}/>
                     </View>
 
-                    <View style={styles.sortByWrapper}>
-                        <Text>Location:</Text>
+                    <View style={{...styles.sortByWrapper, flexBasis: '50%'}}>
+                        <Text style={styles.label}>Location:</Text>
                         <ModalSelector
                             style={styles.select}
                             selectStyle= {styles.select}
                             data={LocationList}
                             initValue={""}
+                            selectTextStyle= {{fontSize: 12}}
                             onChange={(option)=>{ this.setState({location: option.key})}}
                             selectedItemTextStyle = {styles.selectText}/>
                     </View>
-                </View>
-                <View style={styles.searchBar2}>
-                    <View style={styles.sortByWrapper}>
-                        <Text>Salon Name:</Text>
+                    <View style={{...styles.sortByWrapper}}>
+                        <Text style={styles.label}>Salon Name:</Text>
                         <TextInput style={styles.textInput} onChangeText={ (text) => this.setState({salonname: text})} placeholder="Enter Salon Name"></TextInput>
-                    </View>
 
-                    <TouchableOpacity style={styles.searchButton} onPress={() => this.handleSearch()}>
-                        <Text>Search</Text>
+                    <TouchableOpacity style={{...styles.searchButton}} onPress={() => this.handleSearch()}>
+                        <Text style={styles.label}>Search</Text>
                     </TouchableOpacity>
+                    </View>
                 </View>
             </View>
                             
@@ -75,52 +78,52 @@ const styles = StyleSheet.create({
     searchBar:{
         width: '100%',
         backgroundColor: "#EA6652",
-        height:50,
         marginVertical: 10,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         paddingHorizontal: 20,
-    },
-    searchBar2:{
-        width: '100%',
-        backgroundColor: "#FFFFFF",
-        height:50,
-        marginVertical: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
+        flexWrap: 'wrap'
     },
     sortByWrapper:{
         flexDirection:'row',
         alignItems: 'center'
     },
     select:{
-        width: 100,
+        flexBasis: "100%",
         height: 30,
+        width: 100,
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: 'white',
-        borderRadius: 0
+        borderRadius: 0,
+        marginVertical: 2
     }
     ,
     textInput:{
-        width: 200,
+        flex: 1,
+        width: '100%',
         height: 30,
         borderWidth: 1,
         borderColor:'white',
-        paddingLeft: 5
+        paddingLeft: 5,
+        marginVertical: 2,
+        marginRight: 5
     },
     searchButton:{
         backgroundColor:'white',
         padding: 5,
         borderRadius: 5,
         height: 30,
+        marginVertical: 2,
+        marginRight: 5
     },
     selectText:{
         fontSize: 16,
         padding: 0,
+    },
+    label:{
+        marginVertical: 2
     }
 })
 

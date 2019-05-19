@@ -27,8 +27,13 @@ export const SalonCard = (props) => {
                 {salonicon}
                 <Text key={`${key}Description`}>{salon['description']}</Text>
             </TouchableOpacity>
-            <View style={styles.likeWrapper}>
-                <Ionicons name="ios-heart-empty" size={20} style={styles.likeIcon} />
+            <View style={styles.infoWrapper}>
+                <Text>In </Text>
+                <Text>{(salon['location']? salon['location'] : '-' )}</Text>
+            </View>
+            <View style={styles.infoWrapper}>
+                <Text>Price: </Text>
+                <Text>{(salon['avgprice']? salon['avgprice'] : '-' )}</Text>
             </View>
         </View>
     )
@@ -58,7 +63,7 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 20,
     },
-    likeWrapper:{
+    infoWrapper:{
         flexDirection: 'row', 
         marginTop: 10,
     },
