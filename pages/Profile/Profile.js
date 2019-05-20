@@ -42,20 +42,28 @@ class Profile extends Component{
     }
 
     loadData (){
-        this.setState({loading: true})
-        getWorksByuserId(this.props.auth.uid).then(data => {
-            this.setState({portfolio: data})
-            this.setState({loading: false})
-            // loading state
-            return getCommentsOnUser(this.props.auth.uid)
-        }).then((data) => {
-            this.setState({comments: data})
-            this.setState({loading: false})
-            this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../../assets/demo.jpeg')) });
-        }).catch(e => {
-            Alert.alert(e.message)
-        })
+            this.setState({loading: true})
+            getWorksByuserId(this.props.auth.uid).then(data => {
+                this.setState({portfolio: data})
+                this.setState({loading: false})
+                // loading state
+                return getCommentsOnUser(this.props.auth.uid)
+            }).then((data) => {
+                this.setState({comments: data})
+                this.setState({loading: false})
+                this.setState({ icon_source: (this.props.auth.image ? {uri: `data:image/gif;base64,${this.props.auth.image}`}:require('../../assets/demo.jpeg')) });
+            })
+            .catch(e => {
+                Alert.alert(e.message)
+            })
     }
+
+    componentDidUpdate(prevProps){
+        if (!prevProps.auth || this.props.auth && this.props.auth.uid !== prevProps.auth.uid) {
+            this.loadData ();
+          }
+    }
+
 
     removeHairstyleWork(workId){
         console.log('remove hairstyle work')
