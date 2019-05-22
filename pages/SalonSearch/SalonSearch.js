@@ -60,6 +60,7 @@ class SalonSearch extends Component {
         return (
                 <View style={styles.container}>
                     <SalonSearchBar onSearch={this.searchSalon.bind(this)} />
+                    {this.state.searching && this.state.salons.length === 0 && <Text>No match</Text>}
                     {this.state.searching && <ListView dataSource={this.state.dataSource} enableEmptySections={true}
                     onScrollEndDrag={ () => {this.getNewPage()}} 
                     renderRow={(rowData) => <SalonCard salon={rowData} onPress={ this.navigationFuction.bind(this)}/>}

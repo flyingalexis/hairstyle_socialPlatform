@@ -11,11 +11,20 @@ class SalonSearchBar extends Component {
         salonname: null
     }
     handleSearch(){
-        if(this.state.salonname == ''){
-            this.props.onSearch(this.state.price, this.state.location, null);
+        let price = null
+        let location= null;
+        let salonname= null;
+        if(this.state.price && this.state.price != 6){
+            price = this.state.price
+        }
+        if(this.state.location && this.state.location != 4){
+            location = this.state.location
+        }
+        if(this.state.salonname && this.state.salonname != ""){
+            salonname = this.state.salonname
         }
 
-        this.props.onSearch(this.state.price, this.state.location, this.state.salonname);
+        this.props.onSearch(price, location, salonname);
     }
 
     render() {
@@ -25,18 +34,20 @@ class SalonSearchBar extends Component {
             {key: 3, label: '$101-150'},
             {key: 4, label: '$151-200'},
             {key: 5, label: '>$200'},
+            {key: 6, label: 'any'}
         ]
 
         let LocationList = [
             {key: 1, label: 'Hong Kong Island'},
             {key: 2, label: 'Kowloon'},
             {key: 3, label: 'New Territories'},
+            {key: 4, label: 'any'}
         ]
 
         return (
             <View>
                 <View style={styles.searchBar}>
-                    <View style={{...styles.sortByWrapper, flexBasis: '50%'}}>
+                    <View style={{...styles.sortByWrapper}}>
                         <Text style={styles.label}>Price:</Text>
                         <ModalSelector
                             style={styles.select}
@@ -45,16 +56,14 @@ class SalonSearchBar extends Component {
                             initValue={""}
                             onChange={(option)=>{ this.setState({price: option.key})}}
                             selectedItemTextStyle = {styles.selectText}/>
-                    </View>
 
-                    <View style={{...styles.sortByWrapper, flexBasis: '50%'}}>
                         <Text style={styles.label}>Location:</Text>
                         <ModalSelector
                             style={styles.select}
                             selectStyle= {styles.select}
                             data={LocationList}
                             initValue={""}
-                            selectTextStyle= {{fontSize: 12}}
+                            selectTextStyle= {{fontSize: 11}}
                             onChange={(option)=>{ this.setState({location: option.key})}}
                             selectedItemTextStyle = {styles.selectText}/>
                     </View>
@@ -82,22 +91,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: "flex-start",
         justifyContent: "flex-start",
-        paddingHorizontal: 20,
         flexWrap: 'wrap'
     },
     sortByWrapper:{
         flexDirection:'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingLeft: 5,
+        paddingRight: 5
     },
     select:{
-        flexBasis: "100%",
         height: 30,
         width: 100,
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: 'white',
         borderRadius: 0,
-        marginVertical: 2
+        marginVertical: 2,
+        padding: 0
     }
     ,
     textInput:{

@@ -22,7 +22,7 @@ export const SalonCard = (props) => {
             <TouchableOpacity onPress={ () => props.onPress(salon)} key={`${key}Button`}>
                 <View key={`${key}OwnerWrapper`} style={styles.ownerWrapper}>
                     {ownericon}
-                    <Text>{salon['ownername']}</Text>
+                    <Text>{salon['salonName']}</Text>
                 </View>
                 {salonicon}
                 <Text key={`${key}Description`}>{salon['description']}</Text>

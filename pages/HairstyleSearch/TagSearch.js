@@ -59,6 +59,7 @@ class TagSearch extends Component {
         return (
             <View style={styles.container}>
                 <TagSearchBar onSearch={this.searchHairstyleWork.bind(this)}/>
+                {this.state.searching && this.state.hairstyleWorks.length === 0 && <Text>No match</Text>}
                 {this.state.searching && <ListView dataSource={this.state.dataSource} enableEmptySections={true} onScrollEndDrag={ () => {this.getNewPage()}} 
                 renderRow={(rowData) => <HairstyleCard hairstyleWork={rowData} onPress={ this.navigationFuction.bind(this)}/>}
                 contentContainerStyle= {styles.Wrapper}/>}

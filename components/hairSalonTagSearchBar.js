@@ -10,6 +10,10 @@ class TagSearchBar extends Component {
         tag: null
     }
     handleSearch(){
+        if(this.state.tag == ''){
+            this.props.onSearch(this.state.sortBy, null);
+            return
+        }
         this.props.onSearch(this.state.sortBy, this.state.tag);
     }
 
@@ -66,7 +70,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: 'white',
-        borderRadius: 0
+        borderRadius: 0,
+        padding: 0
     }
     ,
     textInput:{
