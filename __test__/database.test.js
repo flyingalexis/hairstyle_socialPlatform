@@ -3,14 +3,14 @@ import firebase from 'firebase';
 
 jest.setTimeout(10000)
 var config = {
-    // put this in .env
     apiKey: "AIzaSyDJRitvjSKtSRsFfqPOzzrNcUFrw7UGb4o",
     authDomain: "comp4521-9f866.firebaseapp.com",
     databaseURL: "https://comp4521-9f866.firebaseio.com",
     projectId: "comp4521-9f866",
     storageBucket: "comp4521-9f866.appspot.com",
-    messagingSenderId: "122458253507"
-  };
+    messagingSenderId: "122458253507",
+    appId: "1:122458253507:web:72dfb58b556c6663"
+};
 
 firebase.initializeApp(config);
 

@@ -16,7 +16,10 @@ pickHairstylePlaceholder = "pick the Hairtyle type -->"
 class AddHairstyleWork extends Component{
     state = {
         hairstyleType: pickHairstylePlaceholder,
-        tags:[]
+        tags:[],
+        description: "",
+        title: "",
+        hairstyleWorkImage: null
     }
     static navigationOptions = navOptions
 
@@ -64,9 +67,10 @@ class AddHairstyleWork extends Component{
                 <TouchableOpacity onPress={ () => this._pickImage()} style={{width: '50%', aspectRatio: 1, backgroundColor: 'blue'}}>
                     <Image source={this.state.hairstyleWorkImage && {uri: `data:image/gif;base64,${this.state.hairstyleWorkImage}`} || require('../../assets/demo.jpeg')} style={styles.hairstyleWork}/>
                 </TouchableOpacity>
-                <TextInput style={styles.textBox} placeholder="Title" placeholderTextColor='#888888' onChangeText={(title) => this.setState({title})} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.textBox} placeholder="Title" value={this.state.title} placeholderTextColor='#888888' onChangeText={(title) => this.setState({title})} underlineColorAndroid="transparent"/>
                 <ModalSelector
                     data={pickerData}
+                    value={this.state.hairstyleType}
                     initValue={pickHairstylePlaceholder}
                     onChange={(option)=>{ this.setState({hairstyleType: option.label}) }} />
                 
@@ -74,7 +78,7 @@ class AddHairstyleWork extends Component{
                     {tags && tags}
                 </View>
                 <TextInput style={styles.textBox} ref={input => this.tagInput = input} placeholder="Separate tags by space" placeholderTextColor='#888888' onChangeText={(tags) => this.getTagsFromText(tags)} underlineColorAndroid="transparent"/>
-                <TextInput style={styles.multilineTextBox} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
+                <TextInput style={styles.multilineTextBox} value={this.state.description} placeholder="description" placeholderTextColor='#888888' multiline = {true} numberOfLines = {4} onChangeText={(description) => this.setState({description})} underlineColorAndroid="transparent"/>
                 <TouchableOpacity style={styles.loginButton} onPress={() => this.handleAddHairstyleWork()}>
                     <Text style={styles.loginButtonText}>Add hairstyleWork</Text>
                 </TouchableOpacity>
@@ -90,7 +94,7 @@ class AddHairstyleWork extends Component{
             Alert.alert('Unauthorized, Please login and create your salon to proceed');
             return
         }
-        if (this.state.title && this.state.description && this.state.hairstyleWorkImage && this.state.hairstyleType != pickHairstylePlaceholder) {
+        if (this.state.title != "" && this.state.description != "" && this.state.hairstyleWorkImage && this.state.hairstyleType != pickHairstylePlaceholder) {
             ownerInfo = 
             {ownerId : this.props.auth.uid,
             ownerName : this.props.auth.name,
@@ -98,6 +102,13 @@ class AddHairstyleWork extends Component{
             hairstyleWorkObj = {...this.state}
             createHairstyleWork(hairstyleWorkObj, ownerInfo).then(() => {Alert.alert("created hairstyle work sucessfully")}).catch((e) => Alert.alert(e.message))
             // save the hairstyle work into database
+            this.setState({
+                hairstyleType: pickHairstylePlaceholder,
+                tags:[],
+                description:"",
+                title:"",
+                hairstyleWorkImage: null
+            })
         }else{
             Alert.alert('Please fill in all the information to Add a hairstyle work');
         }

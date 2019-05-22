@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "eject": "expo eject",
     "test": "node ./node_modules/jest/bin/jest.js --watchAll",
-    "coverage": "node ./node_modules/jest/bin/jest.js --coverage"
+    "coverage": "node ./node_modules/jest/bin/jest.js --coverage",
+    "updateSnapshot": "node ./node_modules/jest/bin/jest.js --updateSnapshot"
   },
   "dependencies": {
     "expo": "^32.0.0",

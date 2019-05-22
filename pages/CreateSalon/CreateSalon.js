@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, Text, View ,Button, Alert, Image, TextInput, TouchableOpacity} from 'react-native'
 import {createSalonProfile, updateProfile} from '../../utils/database'
-import {storeLoginState} from '../../store/auth/actions'
 import {connect} from 'react-redux'
 import navOptions from '../../utils/drawerBarNavOptions'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
@@ -102,11 +101,10 @@ class CreateSalon extends Component{
           allowsEditing: true,
           aspect: [3, 3],
         });
-        
-        // resize image to 100 * 100
-        result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 200, width: 200}}], { format: 'png' , base64: true});
 
         if (!result.cancelled) {
+            // resize image to 100 * 100
+            result = await ImageManipulator.manipulateAsync(result.uri, [{resize:{height: 200, width: 200}}], { format: 'png' , base64: true});
             this.setState({ salonIcon: result.base64 });
             console.log('save image to state');
         }
@@ -118,7 +116,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    updateLoginState: auth => dispatch(storeLoginState(auth))
+    updateLoginState: auth => dispatch(updateLoginState(auth))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSalon)
