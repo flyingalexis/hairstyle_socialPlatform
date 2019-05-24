@@ -1,3 +1,6 @@
+// TANG, Marco Kwan Ho, 20306981, mkhtang@connect.ust.hk
+// WONG, Hoi Ming, 20275118, hmwongak@connect.ust.hk
+
 import React from 'react';
 import {AppDrawerNavigator, Drawer}from './utils/Drawer'
 import { StyleSheet, Text, View , SafeAreaView, ScrollView ,Dimensions, Image, TouchableOpacity} from 'react-native';
