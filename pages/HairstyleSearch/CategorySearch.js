@@ -17,11 +17,6 @@ class CategorySearch extends Component {
     render() {
         let hairstyleCards=[];
 
-        this.props.navigation.navigate('Details', {
-            itemId: 86,
-            otherParam: 'anything you want here',
-          });
-
         Object.keys(hairstylesWithImg).map( (key) => {
             navFunc = () => this.props.navigation.navigate('HairstyleWorkList', {
                 category: key
