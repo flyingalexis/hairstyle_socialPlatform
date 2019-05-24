@@ -197,7 +197,7 @@ class Profile extends Component{
                             </View>
                             {this.state.comment? commentGrid: galleryGrid }
                             <View style={styles.statusGrid}>
-                                <Text style={styles.statusNumber}>{this.props.auth.ratings?this.props.auth.ratings:'-'}</Text>
+                                <Text style={styles.statusNumber}>{this.props.auth.ratings?this.props.auth.ratings.toFixed(2):'-'}</Text>
                                 <Text>Ratings</Text>
                             </View>
                         </View>

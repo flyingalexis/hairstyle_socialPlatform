@@ -126,7 +126,7 @@ class ViewProfile extends Component{
         
         let inactiveRatingGrid = (
             <TouchableOpacity style={styles.statusGrid} onPress={() => {this.handleRatingActive()}}>
-                <Text style={styles.statusNumber}>{this.state.rating?this.state.rating:'-'}</Text>
+                <Text style={styles.statusNumber}>{this.state.rating?this.state.rating.toFixed(2):'-'}</Text>
                 <Text>Ratings</Text>
                 <Text style={{fontSize:10, left:5, position: 'absolute', bottom: 0}}>Press to rate</Text>
             </TouchableOpacity>

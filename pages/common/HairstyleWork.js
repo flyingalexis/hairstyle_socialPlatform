@@ -139,7 +139,6 @@ class HairstyleWork extends Component {
                 </View>
             )
         }
-
         return (
             <View style={styles.container}>
                 <Image source={{ uri: `data:image/gif;base64,${this.hairstyleWork['hairstyleWorkImage']}` }} style={styles.hairstyleWork} />
@@ -159,11 +158,11 @@ class HairstyleWork extends Component {
                     <View style={styles.separationLine}/>
                     {/* {comments} */}
                     <View style={styles.commentsWrapper}>
-                        <FontAwesome name="refresh" style={styles.refreshIcon} size={30} onPress={ () =>this.hardRefreshComments()}/>
                         <ListView dataSource={this.state.dataSource} enableEmptySections={true} onEndReached={ async () =>{
                             console.log('reach the end ?')
                             await this.loadComments()}} 
                         renderRow={(rowData) => <Comment username={rowData.username} comment={rowData.comment}/>}/>
+                        <FontAwesome name="refresh" style={styles.refreshIcon} size={30} onPress={ () => this.hardRefreshComments()}/>
                     </View>
                 </View>
                 <View style={styles.bottomWrapper}>

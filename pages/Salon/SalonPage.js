@@ -3,7 +3,7 @@ import {StyleSheet, Text, View , Image , TouchableOpacity, Alert, Button, Scroll
 import {connect} from 'react-redux'
 import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import {Icon} from 'native-base';
-import {getSalonById, getWorksBySalonId, updateSalonProfile, getCommentsOnSalon, commentOnSalon} from '../../utils/database';
+import {getSalonById, getWorksBySalonId, updateSalonProfile, getCommentsOnSalon, commentOnSalon, removeHairstyleWork} from '../../utils/database';
 import navOptions from '../../utils/drawerBarNavOptions';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -52,6 +52,16 @@ class SalonPage extends Component{
         })
     }
 
+    removeHairstyleWork(workId){
+        console.log('remove hairstyle work')
+        removeHairstyleWork(workId).then( () => {
+            Alert.alert('removed hairstyle work successfully')
+            return this.loadSalonInfo()
+        }).catch( e => {
+            Alert.alert(e.message)
+        })
+    }
+
     render(){
         if(this.state.loading){
             return null
@@ -63,7 +73,7 @@ class SalonPage extends Component{
             let key = work.hairstyleWorkId;
             return (
                 <TouchableOpacity onPress={()=> {this.props.navigation.navigate('HairstyleWork', {hairstyleWork:work, banBrowse: true})}} style={styles.card} key={`${key}button`}>
-                    <TouchableOpacity onPress={() => { }} style={styles.removeImageButton}>
+                    <TouchableOpacity onPress={() => {this.removeHairstyleWork(key)}} style={styles.removeImageButton}>
                         <FontAwesome name={'remove'} style={{ color: 'white' }} />
                     </TouchableOpacity>
                     <Image source={{ uri: `data:image/gif;base64,${work['hairstyleWorkImage']}` }} style={styles.cardsImage} key={`${key}OwnerImg`} />
@@ -152,7 +162,7 @@ class SalonPage extends Component{
                         </View>
                         {this.state.comment? commentGrid: galleryGrid }
                         <View style={styles.statusGrid}>
-                            <Text style={styles.statusNumber}>{this.state.salonInfo.rating?this.state.salonInfo.rating:'-'}</Text>
+                            <Text style={styles.statusNumber}>{this.state.salonInfo.rating?this.state.salonInfo.rating.toFixed(2):'-'}</Text>
                             <Text>Ratings</Text>
                         </View>
                     </View>
