@@ -1,4 +1,4 @@
-This app is developed with react-native. It aims to provide an alternative way for hair salons to promote themselves as well as provides information to assist users to find their desire hairstyle and hair salon. 
+This app is developed with react-native and firebase. It aims to provide an alternative way for hair salons to promote themselves as well as provides information to assist users to find their desire hairstyle and hair salon. 
 
 Main functions
 
